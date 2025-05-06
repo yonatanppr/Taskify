@@ -4,62 +4,85 @@ struct ReminderDatePickerView: View {
     @Binding var todo: TodoItem
     @Binding var reminderDate: Date
     var reminderManager: ReminderManaging
-    var onDateSelected: () -> Void
+    var onDateSelected: (Bool) -> Void
 
     var body: some View {
         ZStack {
             Color.clear
-            VStack(spacing: 16) {
-                DatePicker(
-                    "Select Date",
-                    selection: $reminderDate,
-                    displayedComponents: [.date]
-                )
-                .datePickerStyle(GraphicalDatePickerStyle())
 
-                DatePicker(
-                    "Select Time",
-                    selection: $reminderDate,
-                    displayedComponents: [.hourAndMinute]
-                )
-                .datePickerStyle(WheelDatePickerStyle())
+            VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 16) {
+                    DatePicker(
+                        "Select Date", 
+                        selection: $reminderDate,
+                        displayedComponents: [.date]
+                    )
+                    .datePickerStyle(GraphicalDatePickerStyle())
+                    .accentColor(.primaryAppBlue)
+                    .id("datePicker-\(todo.id)")
+                    .frame(maxWidth: .infinity)
 
-                Button(action: {
-                    todo.reminderDate = reminderDate
-                    reminderManager.schedule(for: todo, at: reminderDate) { _ in
-                        onDateSelected()
-                    }
-                }) {
-                    Text("Confirm")
-                        .foregroundColor(.white)
-                        .padding()
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Select Time")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primaryText) 
+                            .padding(.leading, 4)
+
+                        DatePicker(
+                            "", 
+                            selection: $reminderDate,
+                            displayedComponents: [.hourAndMinute]
+                        )
+                        .datePickerStyle(WheelDatePickerStyle())
+                        .labelsHidden()
+                        .accentColor(.primaryAppBlue) 
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                    }
                 }
 
-                Button(action: {
-                    todo.reminderDate = nil
-                    reminderManager.remove(for: todo)
-                    onDateSelected()
-                }) {
-                    Text("Remove reminder")
-                        .foregroundColor(.blue)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(10)
+                VStack(spacing: 12) { 
+                    Button(action: {
+                        todo.reminderDate = reminderDate
+                        reminderManager.schedule(for: todo, at: reminderDate) { _ in
+                            onDateSelected(false)
+                        }
+                    }) {
+                        Text("Confirm")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.primaryAppBlue)
+                            .cornerRadius(12)
+                    }
+
+                    Button(action: {
+                        todo.reminderDate = nil
+                        reminderManager.remove(for: todo)
+                        onDateSelected(true)
+                    }) {
+                        Text("Remove reminder")
+                            .fontWeight(.medium)
+                            .foregroundColor(.destructiveRed)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.appBackground)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.secondaryText.opacity(0.3), lineWidth: 1)
+                            )
+                    }
                 }
             }
             .padding()
             .background(Color.white)
-            .cornerRadius(12)
-            .shadow(radius: 4)
-            .padding(.horizontal)
-            .padding(.bottom, 40)
-            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .cornerRadius(24)
+            .shadow(radius: 10)
+            .frame(maxWidth: 360)
+            .padding(.horizontal, 16)
         }
-        .ignoresSafeArea()
-        .zIndex(1000)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 }

@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct ViewToggleButton: View {
@@ -6,14 +5,17 @@ struct ViewToggleButton: View {
     @Binding var showViewSelectionDialog: Bool
     
     var body: some View {
-        Image(systemName: isShowingCalendarView ? "pencil" : "calendar")
-            .font(.system(size: 26, weight: .semibold))
-            .foregroundColor(.primary)
-            .padding(22)
-            .background(Color.white.opacity(0.95))
+        Image(systemName: isShowingCalendarView ? "list.bullet" : "calendar") // Swapped icons to better represent target view
+            .font(.system(size: 24, weight: .semibold)) // Slightly adjusted size
+            // CHANGE: Icon color to white if background is blue
+            .foregroundColor(.white)
+            .padding(20) // Adjusted padding
+            // CHANGE: Background to primaryAppBlue
+            .background(Color.primaryAppBlue)
             .clipShape(Circle())
-            .shadow(radius: 4)
-            .position(x: UIScreen.main.bounds.width - 60, y: UIScreen.main.bounds.height - 140)
+            // CHANGE: Consistent shadow
+            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4) // Slightly more pronounced shadow for FAB
+            .position(x: UIScreen.main.bounds.width - 60, y: UIScreen.main.bounds.height - 140) // Position might need adjustment based on tab bar if one exists
             .zIndex(100)
             .onTapGesture {
                 withAnimation(.easeInOut(duration: 0.35)) {
@@ -34,6 +36,7 @@ struct ViewToggleButton: View {
                         isShowingCalendarView = true
                     }
                 }
-            }
+                // ADD: Accent color for dialog buttons
+            }.accentColor(.primaryAppBlue)
     }
 }

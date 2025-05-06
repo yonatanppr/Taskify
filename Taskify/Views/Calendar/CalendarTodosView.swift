@@ -23,53 +23,79 @@ struct CalendarTodosView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            DatePicker(
-                "Select a date",
-                selection: $selectedDate,
-                displayedComponents: [.date]
-            )
-            .datePickerStyle(.graphical)
-            .padding()
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                DatePicker(
+                    "",
+                    selection: $selectedDate,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+                .accentColor(.primaryAppBlue)
+                .frame(maxHeight: 380)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.componentBackground)
+                        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 4)
+                )
+                .padding(.horizontal)
+                .padding(.top, 20)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(datesWithReminders, id: \.self) { date in
+                VStack(spacing: 16) {
+                    Text("Reminders for \(selectedDate, style: .date)")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primaryAppBlue)
+                        .padding(.top)
+
+                    if todosForSelectedDate.isEmpty {
                         VStack {
-                            Text(formattedDay(date))
-                                .font(.caption)
-                                .foregroundColor(Calendar.current.isDate(date, inSameDayAs: selectedDate) ? .white : .blue)
-                                .padding(6)
-                                .background(Calendar.current.isDate(date, inSameDayAs: selectedDate) ? Color.blue : Color.clear)
-                                .clipShape(Circle())
-
-                            Circle()
-                                .fill(Color.blue)
-                                .frame(width: 6, height: 6)
+                            Spacer(minLength: 20)
+                            Image(systemName: "calendar.badge.exclamationmark")
+                                .font(.system(size: 40))
+                                .foregroundColor(.secondaryText.opacity(0.5))
+                            Text("No reminders for this day.")
+                                .foregroundColor(.secondaryText)
+                                .font(.headline)
+                            Spacer(minLength: 20)
                         }
+                        .frame(maxHeight: .infinity)
+                        .padding()
+                    } else {
+                        List {
+                            ForEach(todosForSelectedDate, id: \.id) { todo in
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(todo.title)
+                                            .font(.headline)
+                                            .foregroundColor(.primaryText)
+                                        if let date = todo.reminderDate {
+                                            Text(date, style: .time)
+                                                .font(.caption)
+                                                .foregroundColor(.secondaryText)
+                                        }
+                                    }
+                                    Spacer()
+                                    if let date = todo.reminderDate, date > Date() {
+                                        Circle()
+                                            .fill(Color.accentOrange)
+                                            .frame(width: 8, height: 8)
+                                    }
+                                }
+                                .padding(.vertical, 8)
+                            }
+                        }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
                     }
                 }
                 .padding(.horizontal)
-            }
 
-            if todosForSelectedDate.isEmpty {
-                Text("No reminders for selected day")
-                    .foregroundColor(.gray)
-                    .padding()
-            } else {
-                List(todosForSelectedDate, id: \.id) { todo in
-                    HStack {
-                        Text(todo.title)
-                        Spacer()
-                        if let date = todo.reminderDate {
-                            Text(date, style: .time)
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
+                Spacer()
             }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
+            .background(Color.appBackground.ignoresSafeArea())
         }
-        .padding()
     }
 }

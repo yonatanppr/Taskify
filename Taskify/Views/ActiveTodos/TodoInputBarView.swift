@@ -5,32 +5,40 @@ struct TodoInputBarView: View {
     var onSubmit: () -> Void
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             TextField("What needs to be done?", text: $newTodoText)
                 .disableAutocorrection(true)
                 .textInputAutocapitalization(.never)
-                .padding(14)
-                .background(newTodoText.isEmpty ?
-                            Color(.tertiarySystemFill) :
-                            Color.blue.opacity(0.1))
-                .cornerRadius(12)
-                .font(.system(.body, design: .rounded))
+                .padding(16)
+                // CHANGE: Use componentBackground for the TextField
+                .background(Color.componentBackground)
+                .cornerRadius(16)
+                .font(.system(size: 18, weight: .medium, design: .rounded))
+                // ADD: A subtle border to distinguish the text field
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.appBackground, lineWidth: 1)
+                )
+
 
             Button(action: {
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 onSubmit()
-                newTodoText = ""
+                // REMOVE: newTodoText = "" (This is handled by the TodoGenerationHandler now)
             }) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 28))
-                    .foregroundColor(.blue)
-                    .scaleEffect(newTodoText.isEmpty ? 1.0 : 1.2)
+                    .font(.system(size: 34))
+                    // CHANGE: Use primaryAppBlue for the button
+                    .foregroundColor(Color.primaryAppBlue)
             }
-            .padding(.trailing)
         }
         .padding(.horizontal)
-        .onAppear {
-            let _ = UITextField()
-        }
+        .padding(.vertical, 10)
+        // CHANGE: Use componentBackground for the bar background
+        .background(Color.componentBackground)
+        .cornerRadius(20)
+        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 4) // Slightly adjusted shadow
+        // REMOVE: onAppear block - this UIKit workaround for keyboard might not be necessary or could be handled differently if still needed. Let's remove it for now for cleaner design focus.
+        // If keyboard pre-warming is still desired, it should be managed at a higher level (e.g., in ContentViewModel or AppDelegate).
     }
 }

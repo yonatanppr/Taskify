@@ -2,53 +2,58 @@ import SwiftUI
 import Foundation
 
 struct ContentView: View {
-    @State private var todos: [TodoItem] = []
-    @State private var newTodoText: String = ""
-    @State private var showingDatePickerForIndex: Int? = nil
-    @State private var reminderDate: Date = Date()
-    @State private var showConfirmation: Bool = false
-    @State private var isReady: Bool = false
-
+    @StateObject private var viewModel = ContentViewModel()
+    
     var body: some View {
         Group {
-            if isReady {
+            if viewModel.isReady {
                 ZStack {
-                    Color(red: 0.96, green: 0.96, blue: 0.94).ignoresSafeArea()
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color(red: 0.94, green: 0.97, blue: 1.0),
+                            Color(red: 0.98, green: 0.94, blue: 1.0)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .ignoresSafeArea()
 
-                    TabView {
-                        ActiveTodosView(
-                            todos: $todos,
-                            newTodoText: $newTodoText,
-                            reminderManager: ReminderService(),
-                            showingDatePickerForIndex: $showingDatePickerForIndex,
-                            reminderDate: $reminderDate,
-                            showConfirmation: $showConfirmation
-                        )
-                        .tabItem {
-                            Label("Todos", systemImage: "list.bullet")
+                    ZStack(alignment: .bottomTrailing) {
+                        Group {
+                            if viewModel.isShowingCalendarView {
+                                AnyView(CalendarTodosView(todos: $viewModel.todos))
+                            } else {
+                                AnyView(ActiveTodosView(
+                                    todos: $viewModel.todos,
+                                    newTodoText: $viewModel.newTodoText,
+                                    reminderManager: ReminderService(),
+                                    showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
+                                    reminderDate: $viewModel.reminderDate,
+                                    showConfirmation: $viewModel.showConfirmation
+                                ))
+                            }
+                        }
+                        .transition(.move(edge: viewModel.isShowingCalendarView ? .trailing : .leading))
+                        .zIndex(0)
+                        .animation(.easeInOut(duration: 0.35), value: viewModel.isShowingCalendarView)
+
+                        if let index = viewModel.showingDatePickerForIndex {
+                            ReminderOverlayView(
+                                index: index,
+                                todos: $viewModel.todos,
+                                reminderDate: $viewModel.reminderDate,
+                                showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
+                                showConfirmation: $viewModel.showConfirmation,
+                                reminderManager: ReminderService()
+                            )
+                            .transition(.scale(scale: 0.95).combined(with: .opacity))
+                            .zIndex(1000)
                         }
 
-                        CalendarTodosView(todos: $todos)
-                            .tabItem {
-                                Label("Calendar", systemImage: "calendar")
-                            }
-
-                        CompletedTodosView(todos: $todos)
-                            .tabItem {
-                                Label("Completed", systemImage: "checkmark.circle")
-                            }
-                    }
-
-                    if let index = showingDatePickerForIndex {
-                        ReminderOverlayView(
-                            index: index,
-                            todos: $todos,
-                            reminderDate: $reminderDate,
-                            showingDatePickerForIndex: $showingDatePickerForIndex,
-                            showConfirmation: $showConfirmation,
-                            reminderManager: ReminderService()
+                        ViewToggleButton(
+                            isShowingCalendarView: $viewModel.isShowingCalendarView,
+                            showViewSelectionDialog: $viewModel.showViewSelectionDialog
                         )
-                        .zIndex(1000)
                     }
                 }
             } else {
@@ -57,21 +62,15 @@ struct ContentView: View {
         }
         .onAppear {
             Task {
-                await preloadApp()
-                withAnimation(.easeOut(duration: 0.3)) {
-                    isReady = true
-                }
+                await viewModel.preloadApp()
             }
         }
-    }
-
-    func preloadApp() async {
-        let _ = UITextField() // Warm up UIKit text input system
-        await Task.sleep(600 * 1_000_000) // Simulated load delay (600ms)
+        .onChange(of: viewModel.todos) {
+            TodoStorage.save(viewModel.todos)
+        }
     }
 }
 
 #Preview {
     ContentView()
 }
-

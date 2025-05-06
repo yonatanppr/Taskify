@@ -11,96 +11,116 @@ struct ActiveTodosView: View {
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
 
-    private var backgroundGradient: some View {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.93, green: 0.96, blue: 1.0),
-                Color(red: 0.96, green: 0.90, blue: 1.0)
-            ]),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
+    enum TaskFilter: String, CaseIterable, Identifiable {
+        case all = "All"
+        case upcoming = "Upcoming"
+        case completed = "Completed"
+
+        var id: String { self.rawValue }
     }
+
+    @State private var taskFilter: TaskFilter = .all
+    @Namespace private var filterAnimation
 
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ZStack {
-                backgroundGradient
+        ZStack(alignment: .top) {
+            Color.appBackground
+                .ignoresSafeArea()
 
-                VStack(spacing: 16) {
-                    VStack(spacing: 16) {
-                        TodoInputBarView(newTodoText: $newTodoText) {
-                            guard !newTodoText.isEmpty else { return }
-                            isLoading = true
-                            errorMessage = nil
-                            parseTodosFromText(newTodoText) { items in
-                                DispatchQueue.main.async {
-                                    withAnimation(.spring()) {
-                                        if items.isEmpty {
-                                            errorMessage = "Failed to generate todos. Please try again."
-                                            todos.append(TodoItem(title: "Mock Todo"))
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                                                withAnimation {
-                                                    errorMessage = nil
-                                                }
-                                            }
-                                        } else {
-                                            for title in items {
-                                                todos.append(TodoItem(title: title.trimmingCharacters(in: .whitespacesAndNewlines)))
-                                            }
-                                            newTodoText = ""
-                                        }
-                                        isLoading = false
-                                    }
-                                }
-                            }
-                        }
-
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                                .scaleEffect(1.2)
-                                .transition(.opacity)
-                        }
-
-                        if let message = errorMessage {
-                            Text(message)
-                                .font(.footnote)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 16)
-                                .background(Color.red.opacity(0.8))
-                                .clipShape(Capsule())
-                                .transition(.opacity)
-                        }
-
-                        ActiveTodoListSection(
-                            todos: $todos,
-                            showingDatePickerForIndex: $showingDatePickerForIndex,
-                            reminderDate: $reminderDate,
-                            showConfirmation: $showConfirmation,
-                            reminderManager: reminderManager
-                        )
-
-                        if showConfirmation {
-                            ConfirmationToastView(message: "Reminder set!")
-                                .transition(.move(edge: .top).combined(with: .opacity))
-                        }
+            VStack(spacing: 24) {
+                // Input bar
+                VStack(spacing: 12) {
+                    TodoInputBarView(newTodoText: $newTodoText) {
+                        handleNewTodoSubmission()
                     }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(20)
-                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-                    .padding()
-                    Spacer()
+
+                    if let message = errorMessage {
+                        Text(message)
+                            .font(.caption)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.destructiveRed.opacity(0.9))
+                            .clipShape(Capsule())
+                            .transition(.scale(scale: 0.9, anchor: .top).animation(.spring(response: 0.3, dampingFraction: 0.6)))
+                    }
                 }
-                .onAppear {
-                    withAnimation(.easeOut(duration: 0.5)) {}
+                .padding(.horizontal, 20)
+                .padding(.top, 40)
+
+                HStack(spacing: 0) {
+                    ForEach(TaskFilter.allCases) { filter in
+                        Button(action: {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                taskFilter = filter
+                            }
+                        }) {
+                            ZStack {
+                                if taskFilter == filter {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color.primaryAppBlue)
+                                        .matchedGeometryEffect(id: "filterBackground", in: filterAnimation)
+                                        .allowsHitTesting(false)
+                                }
+
+                                Text(filter.rawValue)
+                                    .font(.footnote)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(taskFilter == filter ? .white : .primaryAppBlue)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 32)
+                        }
+                        .contentShape(Rectangle())
+                        .buttonStyle(PlainButtonStyle())
+                    }
                 }
+                .background(Color.primaryAppBlue.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .padding(.horizontal, 20)
+                .zIndex(1)
+
+                // Loading Indicator
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .primaryAppBlue))
+                        .scaleEffect(1.4)
+                        .transition(.scale.animation(.spring(response: 0.3, dampingFraction: 0.6)))
+                }
+
+                // Todo List
+                ActiveTodoListSection(
+                    todos: $todos,
+                    taskFilter: taskFilter,
+                    showingDatePickerForIndex: $showingDatePickerForIndex,
+                    reminderDate: $reminderDate,
+                    showConfirmation: $showConfirmation,
+                    reminderManager: reminderManager
+                )
+                .padding(.horizontal, 16)
+                .zIndex(0)
+
+                // Confirmation Toast
+                if showConfirmation {
+                    ConfirmationToastView(message: "Reminder set!")
+                        .transition(.move(edge: .top).animation(.spring(response: 0.4, dampingFraction: 0.7)))
+                }
+
+                Spacer(minLength: 24)
             }
+        }
+    }
+
+    private func handleNewTodoSubmission() {
+        TodoGenerationHandler.handleNewTodoSubmission(
+            text: newTodoText,
+            todos: $todos,
+            isLoading: $isLoading,
+            errorMessage: $errorMessage,
+            reminderManager: reminderManager
+        ) {
+            newTodoText = ""
         }
     }
 }

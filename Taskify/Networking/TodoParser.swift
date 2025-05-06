@@ -1,10 +1,10 @@
 import SwiftUI
 import Foundation
 
-func parseTodosFromText(_ text: String, completion: @escaping ([String]) -> Void) {
+func parseTodosFromText(_ text: String, completion: @escaping ([ParsedTodoItem]) -> Void) {
     print("🚀 Starting ChatGPT request")
 
-    guard let url = URL(string: "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta") else {
+    guard let url = URL(string: "https://openrouter.ai/api/v1/chat/completions") else {
         print("❌ Invalid URL")
         completion([])
         return
@@ -12,25 +12,24 @@ func parseTodosFromText(_ text: String, completion: @escaping ([String]) -> Void
 
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
-    request.setValue("Bearer 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", forHTTPHeaderField: "Authorization")
+    request.setValue("Bearer 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", forHTTPHeaderField: "Authorization")
+    request.setValue("openrouter-ai", forHTTPHeaderField: "HTTP-Referer")
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.timeoutInterval = 100
+    request.timeoutInterval = 60
+
+    let isoNow = ISO8601DateFormatter().string(from: Date())
+
+    let messages: [[String: String]] = [
+        ["role": "system", "content": """
+        Forget all previous inputs. You are an assistant integrated into a todo list app. Today's current datetime is "\(isoNow)". The user will enter a single sentence describing one or more tasks. Only extract tasks that are mentioned in that sentence. Do not invent or include tasks that are not explicitly described. Return a JSON array where each object has a "title" (capitalized first letter) and a "reminder" (an ISO 8601 datetime like "2024-05-04T14:00:00", or null if no reminder is mentioned). If a task is provided with an unspecific time like "in the evening", "tomorrow morning" or "next week" generate a plausible reminder. If only a day but no time is given (e.g. "tomorrow"), infer a sensible time from context or default to 6am. If the time of the todo is earlier than the current datetime and no day or date is provided assume the task to be meant for the following day at the time that the user provided. Do not include explanations or extra formatting. Return only valid JSON.
+        """],
+        ["role": "user", "content": "\"\(text)\""]
+    ]
 
     let json: [String: Any] = [
-        "inputs": """
-        Extract individual todo items from the following sentence:
-
-        "\(text)"
-
-        Output the todos one per line, enclosed between the words 'start' and 'stop'.
-
-        Example:
-
-        start
-        Shower
-        Buy shampoo
-        stop
-        """
+        "model": "mistralai/mistral-7b-instruct:free",
+        "messages": messages,
+        "temperature": 0.2
     ]
 
     do {
@@ -41,7 +40,12 @@ func parseTodosFromText(_ text: String, completion: @escaping ([String]) -> Void
         return
     }
 
-    URLSession.shared.dataTask(with: request) { data, response, error in
+    let config = URLSessionConfiguration.default
+    config.timeoutIntervalForRequest = 60
+    config.timeoutIntervalForResource = 60
+    let session = URLSession(configuration: config)
+
+    session.dataTask(with: request) { data, response, error in
         if let error = error {
             print("❌ Request failed: \(error.localizedDescription)")
             completion([])
@@ -59,52 +63,74 @@ func parseTodosFromText(_ text: String, completion: @escaping ([String]) -> Void
             if let data = data, let errorMessage = String(data: data, encoding: .utf8) {
                 print("Response body: \(errorMessage)")
             }
-            if httpResponse.statusCode == 429 {
-                print("⚠️ Using mock fallback due to quota limit.")
-                completion(["Buy groceries", "Call mom", "Read 10 pages of a book"])
-            } else {
-                completion([])
-            }
+            completion([])
             return
         }
 
-        if let data = data {
-            print("📥 Data received: \(data.count) bytes")
-        } else {
-            print("❌ No data received")
-        }
-
         guard let data = data else {
+            print("❌ No data received")
             completion([])
             return
         }
 
         do {
-            if let jsonArray = try JSONSerialization.jsonObject(with: data) as? [[String: Any]],
-               let generatedText = jsonArray.first?["generated_text"] as? String {
-                print("✅ Parsed response: \(generatedText)")
-                let lines = generatedText.components(separatedBy: .newlines)
-                if let start = lines.firstIndex(where: { $0.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == "start" }),
-                   let stop = lines[start...].firstIndex(where: { $0.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == "stop" }) {
-                    let todos = lines[(start + 1)..<stop]
-                        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                        .filter { !$0.isEmpty }
-                    completion(Array(todos))
+            if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                if let choices = json["choices"] as? [[String: Any]],
+                   let message = choices.first?["message"] as? [String: Any],
+                   let content = message["content"] as? String {
+                    print("✅ Parsed response: \(content)")
+                    guard let firstChar = content.trimmingCharacters(in: .whitespacesAndNewlines).first,
+                          firstChar == "[" else {
+                        print("⚠️ Response is not a valid JSON array.")
+                        completion([])
+                        return
+                    }
+                    if let data = content.data(using: .utf8),
+                       let todosArray = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                        let todos = todosArray.prefix(10).compactMap { item -> ParsedTodoItem? in
+                            guard let title = item["title"] as? String else { return nil }
+                            var reminderDate: Date? = nil
+                            if let reminderString = item["reminder"] as? String {
+                                let isoFormatter = ISO8601DateFormatter()
+                                isoFormatter.formatOptions = [.withInternetDateTime]
+                                reminderDate = isoFormatter.date(from: reminderString)
+
+                                if reminderDate == nil {
+                                    isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                                    reminderDate = isoFormatter.date(from: reminderString)
+                                }
+
+                                // Final fallback using custom formatter without 'Z' or timezone
+                                if reminderDate == nil {
+                                    let customFormatter = DateFormatter()
+                                    customFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                                    customFormatter.timeZone = TimeZone.current
+                                    reminderDate = customFormatter.date(from: reminderString)
+                                }
+
+                                print("🧪 Attempted to parse '\(reminderString)' → \(String(describing: reminderDate))")
+                            }
+                            return ParsedTodoItem(title: title, reminder: reminderDate)
+                        }
+                        completion(todos)
+                    } else {
+                        completion([])
+                    }
+                } else if let content = json["output"] as? String ?? json["response"] as? String {
+                    print("✅ Parsed fallback response: \(content)")
+                    let todos = content
+                        .components(separatedBy: .newlines)
+                        .map { ParsedTodoItem(title: $0.trimmingCharacters(in: .whitespacesAndNewlines), reminder: nil) }
+                        .filter { !$0.title.isEmpty }
+                    completion(todos)
                 } else {
-                    print("❌ 'start' or 'stop' not found in response")
+                    print("❌ Unexpected JSON structure: \(json)")
                     completion([])
                 }
-            } else {
-                print("❌ Unexpected JSON structure")
-                completion([])
             }
         } catch {
             print("❌ Decoding error: \(error)")
-            if let raw = String(data: data, encoding: .utf8) {
-                print("⚠️ Raw fallback response: \(raw)")
-            }
-            print("⚠️ Using mock fallback due to decoding error.")
-            completion(["Take a walk", "Organize desk"])
+            completion([])
         }
     }.resume()
     print("📤 Request sent")

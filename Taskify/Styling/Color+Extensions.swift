@@ -17,6 +17,8 @@ extension Color {
     // MARK: - Semantic Colors
     static let destructiveRed = Color.red
     static let positiveGreen = Color(red: 0.2, green: 0.8, blue: 0.4) // A slightly more vibrant green
+    static let reminderUpcoming = Color(red: 0.64, green: 0.89, blue: 0.86) // Pastel teal
+    static let reminderOverdue = Color(red: 0.96, green: 0.66, blue: 0.63) // Pastel coral
 }
 
 // Helper for hex colors if needed in the future

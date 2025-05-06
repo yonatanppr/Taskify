@@ -5,6 +5,7 @@ protocol ReminderManaging {
 import Foundation
 import UserNotifications
 
+
 struct ReminderService {
     static func scheduleReminder(for todo: TodoItem, at date: Date, completion: @escaping (TodoItem) -> Void) {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
@@ -21,7 +22,7 @@ struct ReminderService {
     }
     
     private static func scheduleNotification(for todo: TodoItem, at date: Date, completion: @escaping (TodoItem) -> Void) {
-        var updatedTodo = todo
+        let updatedTodo = todo
         
         let content = UNMutableNotificationContent()
         content.title = "Reminder"

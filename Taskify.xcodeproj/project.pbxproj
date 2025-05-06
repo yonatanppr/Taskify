@@ -29,25 +29,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2D7BB7642DC2BAF000840843 /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D7BB7712DC2BAF100840843 /* ToDoListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D7BB77B2DC2BAF100840843 /* ToDoListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D7BB7642DC2BAF000840843 /* Taskify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Taskify.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D7BB7712DC2BAF100840843 /* TaskifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskifyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2D7BB7662DC2BAF000840843 /* ToDoList */ = {
+		2D7BB7662DC2BAF000840843 /* Taskify */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ToDoList;
+			path = Taskify;
 			sourceTree = "<group>";
 		};
-		2D7BB7742DC2BAF100840843 /* ToDoListTests */ = {
+		2D7BB7742DC2BAF100840843 /* TaskifyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ToDoListTests;
+			path = TaskifyTests;
 			sourceTree = "<group>";
 		};
-		2D7BB77E2DC2BAF100840843 /* ToDoListUITests */ = {
+		2D7BB77E2DC2BAF100840843 /* TaskifyUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ToDoListUITests;
+			path = TaskifyUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -82,9 +82,9 @@
 		2D7BB75B2DC2BAF000840843 = {
 			isa = PBXGroup;
 			children = (
-				2D7BB7662DC2BAF000840843 /* ToDoList */,
-				2D7BB7742DC2BAF100840843 /* ToDoListTests */,
-				2D7BB77E2DC2BAF100840843 /* ToDoListUITests */,
+				2D7BB7662DC2BAF000840843 /* Taskify */,
+				2D7BB7742DC2BAF100840843 /* TaskifyTests */,
+				2D7BB77E2DC2BAF100840843 /* TaskifyUITests */,
 				2D7BB7652DC2BAF000840843 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,9 +92,9 @@
 		2D7BB7652DC2BAF000840843 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2D7BB7642DC2BAF000840843 /* ToDoList.app */,
-				2D7BB7712DC2BAF100840843 /* ToDoListTests.xctest */,
-				2D7BB77B2DC2BAF100840843 /* ToDoListUITests.xctest */,
+				2D7BB7642DC2BAF000840843 /* Taskify.app */,
+				2D7BB7712DC2BAF100840843 /* TaskifyTests.xctest */,
+				2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,9 +102,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2D7BB7632DC2BAF000840843 /* ToDoList */ = {
+		2D7BB7632DC2BAF000840843 /* Taskify */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D7BB7852DC2BAF100840843 /* Build configuration list for PBXNativeTarget "ToDoList" */;
+			buildConfigurationList = 2D7BB7852DC2BAF100840843 /* Build configuration list for PBXNativeTarget "Taskify" */;
 			buildPhases = (
 				2D7BB7602DC2BAF000840843 /* Sources */,
 				2D7BB7612DC2BAF000840843 /* Frameworks */,
@@ -115,20 +115,20 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				2D7BB7662DC2BAF000840843 /* ToDoList */,
+				2D7BB7662DC2BAF000840843 /* Taskify */,
 			);
-			name = ToDoList;
+			name = Taskify;
 			packageProductDependencies = (
 				2D015F452DC66FC800BA53B1 /* ElegantCalendar */,
 				2D015F482DC6722600BA53B1 /* SwiftUICalendar */,
 			);
 			productName = ToDoList;
-			productReference = 2D7BB7642DC2BAF000840843 /* ToDoList.app */;
+			productReference = 2D7BB7642DC2BAF000840843 /* Taskify.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D7BB7702DC2BAF100840843 /* ToDoListTests */ = {
+		2D7BB7702DC2BAF100840843 /* TaskifyTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D7BB7882DC2BAF100840843 /* Build configuration list for PBXNativeTarget "ToDoListTests" */;
+			buildConfigurationList = 2D7BB7882DC2BAF100840843 /* Build configuration list for PBXNativeTarget "TaskifyTests" */;
 			buildPhases = (
 				2D7BB76D2DC2BAF100840843 /* Sources */,
 				2D7BB76E2DC2BAF100840843 /* Frameworks */,
@@ -140,18 +140,18 @@
 				2D7BB7732DC2BAF100840843 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				2D7BB7742DC2BAF100840843 /* ToDoListTests */,
+				2D7BB7742DC2BAF100840843 /* TaskifyTests */,
 			);
-			name = ToDoListTests;
+			name = TaskifyTests;
 			packageProductDependencies = (
 			);
 			productName = ToDoListTests;
-			productReference = 2D7BB7712DC2BAF100840843 /* ToDoListTests.xctest */;
+			productReference = 2D7BB7712DC2BAF100840843 /* TaskifyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		2D7BB77A2DC2BAF100840843 /* ToDoListUITests */ = {
+		2D7BB77A2DC2BAF100840843 /* TaskifyUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D7BB78B2DC2BAF100840843 /* Build configuration list for PBXNativeTarget "ToDoListUITests" */;
+			buildConfigurationList = 2D7BB78B2DC2BAF100840843 /* Build configuration list for PBXNativeTarget "TaskifyUITests" */;
 			buildPhases = (
 				2D7BB7772DC2BAF100840843 /* Sources */,
 				2D7BB7782DC2BAF100840843 /* Frameworks */,
@@ -163,13 +163,13 @@
 				2D7BB77D2DC2BAF100840843 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				2D7BB77E2DC2BAF100840843 /* ToDoListUITests */,
+				2D7BB77E2DC2BAF100840843 /* TaskifyUITests */,
 			);
-			name = ToDoListUITests;
+			name = TaskifyUITests;
 			packageProductDependencies = (
 			);
 			productName = ToDoListUITests;
-			productReference = 2D7BB77B2DC2BAF100840843 /* ToDoListUITests.xctest */;
+			productReference = 2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -195,7 +195,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2D7BB75F2DC2BAF000840843 /* Build configuration list for PBXProject "ToDoList" */;
+			buildConfigurationList = 2D7BB75F2DC2BAF000840843 /* Build configuration list for PBXProject "Taskify" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -213,9 +213,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2D7BB7632DC2BAF000840843 /* ToDoList */,
-				2D7BB7702DC2BAF100840843 /* ToDoListTests */,
-				2D7BB77A2DC2BAF100840843 /* ToDoListUITests */,
+				2D7BB7632DC2BAF000840843 /* Taskify */,
+				2D7BB7702DC2BAF100840843 /* TaskifyTests */,
+				2D7BB77A2DC2BAF100840843 /* TaskifyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -271,12 +271,12 @@
 /* Begin PBXTargetDependency section */
 		2D7BB7732DC2BAF100840843 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D7BB7632DC2BAF000840843 /* ToDoList */;
+			target = 2D7BB7632DC2BAF000840843 /* Taskify */;
 			targetProxy = 2D7BB7722DC2BAF100840843 /* PBXContainerItemProxy */;
 		};
 		2D7BB77D2DC2BAF100840843 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D7BB7632DC2BAF000840843 /* ToDoList */;
+			target = 2D7BB7632DC2BAF000840843 /* Taskify */;
 			targetProxy = 2D7BB77C2DC2BAF100840843 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -471,7 +471,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToDoList.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToDoList";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taskify.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Taskify";
 			};
 			name = Debug;
 		};
@@ -489,7 +489,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ToDoList.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ToDoList";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taskify.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Taskify";
 			};
 			name = Release;
 		};
@@ -528,7 +528,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2D7BB75F2DC2BAF000840843 /* Build configuration list for PBXProject "ToDoList" */ = {
+		2D7BB75F2DC2BAF000840843 /* Build configuration list for PBXProject "Taskify" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D7BB7832DC2BAF100840843 /* Debug */,
@@ -537,7 +537,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D7BB7852DC2BAF100840843 /* Build configuration list for PBXNativeTarget "ToDoList" */ = {
+		2D7BB7852DC2BAF100840843 /* Build configuration list for PBXNativeTarget "Taskify" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D7BB7862DC2BAF100840843 /* Debug */,
@@ -546,7 +546,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D7BB7882DC2BAF100840843 /* Build configuration list for PBXNativeTarget "ToDoListTests" */ = {
+		2D7BB7882DC2BAF100840843 /* Build configuration list for PBXNativeTarget "TaskifyTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D7BB7892DC2BAF100840843 /* Debug */,
@@ -555,7 +555,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D7BB78B2DC2BAF100840843 /* Build configuration list for PBXNativeTarget "ToDoListUITests" */ = {
+		2D7BB78B2DC2BAF100840843 /* Build configuration list for PBXNativeTarget "TaskifyUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D7BB78C2DC2BAF100840843 /* Debug */,
