@@ -18,12 +18,12 @@ struct ActiveTodosView: View {
         case all = "All"
         case upcoming = "Upcoming"
         case quickTics = "Quick Tics"
-        //case completed = "Completed"
+        // case completed = "Completed" // Removed this case
 
         var id: String { self.rawValue }
 
         static var allCases: [TaskFilter] {
-            [.all, .upcoming, .quickTics]
+            [.all, .upcoming, .quickTics] // Updated allCases
         }
     }
 

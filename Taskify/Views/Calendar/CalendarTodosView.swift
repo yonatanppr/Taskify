@@ -11,10 +11,10 @@ struct CalendarTodosView: View {
         let matched = todos.filter {
             let todoDay = Calendar.current.startOfDay(for: $0.reminderDate ?? .distantPast)
             let isMatch = todoDay == selectedDay
-            print("🔍 \(String(describing: $0.title)) → \(String(describing: $0.reminderDate)) | Matched: \(isMatch)")
+           // print("🔍 \(String(describing: $0.title)) → \(String(describing: $0.reminderDate)) | Matched: \(isMatch)")
             return isMatch
         }
-        print("📅 Selected Day: \(selectedDay), Matches Found: \(matched.count)")
+      //  print("📅 Selected Day: \(selectedDay), Matches Found: \(matched.count)")
         return matched
     }
 

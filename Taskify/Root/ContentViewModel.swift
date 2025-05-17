@@ -14,7 +14,6 @@ class ContentViewModel: ObservableObject {
     @MainActor
     func preloadApp() async {
         todos = TodoStorage.load()
-        // REMOVE: await as it's no longer needed due to @MainActor on the function
         let _ = UITextField() // Warm up UIKit text input system
         withAnimation(.easeOut(duration: 0.3)) {
             isReady = true

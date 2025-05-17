@@ -14,7 +14,7 @@ struct TodoGenerationHandler {
         errorMessage.wrappedValue = nil
 
         do {
-            let items = try await GPTService.shared.generateTodos(from: text)
+            let items = try await LLMService.shared.generateTodos(from: text)
             await MainActor.run {
                 if items.isEmpty {
                     errorMessage.wrappedValue = "Failed to generate todos. Please try again."

@@ -38,13 +38,30 @@ struct ActiveTodoListSection: View {
 
                 let onToggle = {
                     withAnimation(.easeInOut(duration: 0.25)) {
+                        let wasDone = todoBinding.wrappedValue.isDone // Capture state before toggle
                         todoBinding.isDone.wrappedValue.toggle()
-                        if todoBinding.isDone.wrappedValue {
-                            print(" Removing reminder for '\(todoBinding.title.wrappedValue)'")
+                        let isNowDone = todoBinding.wrappedValue.isDone // State after toggle
+
+                        // Only act if the task was marked from not done to done
+                        if !wasDone && isNowDone {
+                            let todoForReminderRemoval = todoBinding.wrappedValue // This item is now done and should have its reminderID
+
+                            if let rId = todoForReminderRemoval.reminderID {
+                                print(" Removing reminder for '\(todoForReminderRemoval.title)' with ID: \(rId)")
+                            } else {
+                                print(" Removing reminder for '\(todoForReminderRemoval.title)' (item had no reminderID when toggled to done)")
+                            }
+                            
+                            // Call remove with the todoItem that is now marked done.
+                            // Its reminderID should still be intact at this point.
+                            reminderManager.remove(for: todoForReminderRemoval)
+                            
+                            // Then, clear the reminder properties on the binding
                             todoBinding.reminderDate.wrappedValue = nil
                             todoBinding.reminderID.wrappedValue = nil
-                            reminderManager.remove(for: todoBinding.wrappedValue)
                         }
+                        // If toggling from done back to not done, no specific reminder action here.
+                        // A new reminder would need to be set explicitly by the user.
                     }
                 }
 
