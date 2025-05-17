@@ -22,7 +22,9 @@ struct ReminderService {
     }
     
     private static func scheduleNotification(for todo: TodoItem, at date: Date, completion: @escaping (TodoItem) -> Void) {
-        let updatedTodo = todo
+        var updatedTodo = todo
+        let identifier = UUID().uuidString
+        updatedTodo.reminderID = identifier
         
         let content = UNMutableNotificationContent()
         content.title = "Reminder"
@@ -32,7 +34,7 @@ struct ReminderService {
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
 
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
@@ -45,13 +47,13 @@ struct ReminderService {
     }
     
     static func removeReminder(for todo: TodoItem) {
-        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-            let matchingIdentifiers = requests
-                .filter { $0.content.body == todo.title }
-                .map { $0.identifier }
-            
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: matchingIdentifiers)
-            print("🗑️ Removed reminder for \(todo.title)")
+        UNUserNotificationCenter.current().getPendingNotificationRequests { _ in
+            if let id = todo.reminderID {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+                print("🗑️ Removed reminder with ID \(id) for \(todo.title)")
+            } else {
+                print("⚠️ No reminderID found for \(todo.title). Nothing was removed.")
+            }
         }
     }
 }

@@ -1,24 +1,18 @@
-
 import SwiftUI
 
 extension Color {
-    // MARK: - Primary Colors
-    static let primaryAppBlue = Color(red: 0.0, green: 0.478, blue: 1.0) // Standard systemBlue
-    static let accentOrange = Color.orange
-
-    // MARK: - Background Colors
-    static let appBackground = Color(UIColor.systemGray6) // Light, neutral background
-    static let componentBackground = Color(UIColor.systemBackground) // For cards, input fields
-
     // MARK: - Text Colors
-    static let primaryText = Color.primary
-    static let secondaryText = Color.secondary
+    static let primaryText = Color.white                               // High contrast white text for glassy UI
+    static let secondaryText = Color.white.opacity(0.7)                // Subtle secondary white text
+
+    // MARK: - Gradient Colors
+    static let shadowGray = Color.black.opacity(0.15)
 
     // MARK: - Semantic Colors
-    static let destructiveRed = Color.red
-    static let positiveGreen = Color(red: 0.2, green: 0.8, blue: 0.4) // A slightly more vibrant green
-    static let reminderUpcoming = Color(red: 0.64, green: 0.89, blue: 0.86) // Pastel teal
-    static let reminderOverdue = Color(red: 0.96, green: 0.66, blue: 0.63) // Pastel coral
+    static let accentGray = Color.gray//Color(red: 0.2, green: 0, blue: 0.8).opacity(0.5) // Standard blue - For accents
+    static let destructiveRed = Color(red: 1.0, green: 0.1, blue: 0.2).opacity(0.9) // Muted red for destructive actions
+    static let positiveGreen = Color(red: 0.7, green: 0.9, blue: 0.7)      // Consistent pastel green - for completed checkmark
+    static let quickTicYellow = Color(red: 1.0, green: 0.9, blue: 0.3) // Brighter golden yellow for quick tics.
 }
 
 // Helper for hex colors if needed in the future
@@ -47,4 +41,3 @@ extension Color {
         )
     }
 }
-

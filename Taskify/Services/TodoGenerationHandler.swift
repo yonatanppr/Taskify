@@ -36,13 +36,18 @@ struct TodoGenerationHandler {
                                 title: parsed.title.trimmingCharacters(in: .whitespacesAndNewlines),
                                 reminderDate: parsed.reminder
                             )
-                            todos.wrappedValue.append(newTodo)
 
-                            print("🔍 parsed.reminder = \(String(describing: parsed.reminder))")
                             if let reminder = parsed.reminder {
                                 print("📅 Scheduling reminder for '\(newTodo.title)' at \(reminder)")
-                                reminderManager.schedule(for: newTodo, at: reminder) { success in
+                                reminderManager.schedule(for: newTodo, at: reminder) { updatedTodo in
+                                    DispatchQueue.main.async {
+                                        // Only print the outer confirmation for clarity
+                                        print("✅ Reminder scheduled...")
+                                        todos.wrappedValue.append(updatedTodo)
+                                    }
                                 }
+                            } else {
+                                todos.wrappedValue.append(newTodo)
                             }
                         }
                     }

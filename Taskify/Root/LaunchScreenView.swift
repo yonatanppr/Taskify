@@ -10,7 +10,7 @@ struct LaunchScreenView: View {
                     .scaleEffect(1.5)
                 Text("Preparing your tasks...")
                     .font(.footnote)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondaryText)
             }
         }
     }

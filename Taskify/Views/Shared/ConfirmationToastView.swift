@@ -16,7 +16,7 @@ struct ConfirmationToastView: View {
         .padding(.vertical, 8)
         .background(Color.positiveGreen.opacity(0.15))
         .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+        .shadow(color: .shadowGray, radius: 3, x: 0, y: 2)
         .transition(.scale(scale: 0.9, anchor: .center).combined(with: .opacity).animation(.spring(response: 0.3, dampingFraction: 0.7)))
     }
 }

@@ -3,42 +3,62 @@ import SwiftUI
 struct TodoInputBarView: View {
     @Binding var newTodoText: String
     var onSubmit: () -> Void
+    @FocusState.Binding var isInputActive: Bool
+
+    private let placeholderText = "What needs to be done?"
 
     var body: some View {
-        HStack(spacing: 12) {
-            TextField("What needs to be done?", text: $newTodoText)
-                .disableAutocorrection(true)
+        HStack {
+            TextField("", text: $newTodoText)
+                .disableAutocorrection(false)
                 .textInputAutocapitalization(.never)
-                .padding(16)
-                // CHANGE: Use componentBackground for the TextField
-                .background(Color.componentBackground)
-                .cornerRadius(16)
-                .font(.system(size: 18, weight: .medium, design: .rounded))
-                // ADD: A subtle border to distinguish the text field
+                .font(.system(size: 35, weight: .bold))
+                .foregroundColor(.primaryText)
+                .accentColor(.accentGray)
+                .padding(.leading, 16)
+                .submitLabel(.done)
+                .onSubmit {
+                    DispatchQueue.main.async {
+                        onSubmit()
+                    }
+                }
+                .focused($isInputActive)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.appBackground, lineWidth: 1)
+                    newTodoText.isEmpty
+                        ? VStack(alignment: .leading) {
+                            Text(placeholderText)
+                                .foregroundColor(.primaryText)
+                                .font(.system(size: 35, weight: .bold))
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.leading, 16)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .allowsHitTesting(false)
+                        : nil,
+                    alignment: .leading
                 )
-
-
+            Spacer()
+            /*
             Button(action: {
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                onSubmit()
-                // REMOVE: newTodoText = "" (This is handled by the TodoGenerationHandler now)
+                DispatchQueue.main.async {
+                    onSubmit()
+                }
             }) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 34))
-                    // CHANGE: Use primaryAppBlue for the button
-                    .foregroundColor(Color.primaryAppBlue)
+                ZStack {
+                    Circle()
+                        .fill(Color.accentBlue)
+                        .frame(width: 55, height: 55)
+                    Image(systemName: "plus")
+                        .font(.system(size: 25, weight: .bold))
+                        .foregroundColor(.primaryText)
+                }
             }
+            .padding(.trailing, 16)
+            */
         }
-        .padding(.horizontal)
-        .padding(.vertical, 10)
-        // CHANGE: Use componentBackground for the bar background
-        .background(Color.componentBackground)
-        .cornerRadius(20)
-        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 4) // Slightly adjusted shadow
-        // REMOVE: onAppear block - this UIKit workaround for keyboard might not be necessary or could be handled differently if still needed. Let's remove it for now for cleaner design focus.
-        // If keyboard pre-warming is still desired, it should be managed at a higher level (e.g., in ContentViewModel or AppDelegate).
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color.clear)
     }
 }

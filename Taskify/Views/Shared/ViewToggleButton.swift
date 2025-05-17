@@ -8,13 +8,13 @@ struct ViewToggleButton: View {
         Image(systemName: isShowingCalendarView ? "list.bullet" : "calendar") // Swapped icons to better represent target view
             .font(.system(size: 24, weight: .semibold)) // Slightly adjusted size
             // CHANGE: Icon color to white if background is blue
-            .foregroundColor(.white)
+            .foregroundColor(.primaryText)
             .padding(20) // Adjusted padding
-            // CHANGE: Background to primaryAppBlue
-            .background(Color.primaryAppBlue)
+            // CHANGE: Background to themeOrange
+            .background(Color.accentGray)
             .clipShape(Circle())
             // CHANGE: Consistent shadow
-            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4) // Slightly more pronounced shadow for FAB
+            .shadow(color: .shadowGray, radius: 8, x: 0, y: 4) // Slightly more pronounced shadow for FAB
             .position(x: UIScreen.main.bounds.width - 60, y: UIScreen.main.bounds.height - 140) // Position might need adjustment based on tab bar if one exists
             .zIndex(100)
             .onTapGesture {
@@ -37,6 +37,6 @@ struct ViewToggleButton: View {
                     }
                 }
                 // ADD: Accent color for dialog buttons
-            }.accentColor(.primaryAppBlue)
+            }.accentColor(.accentGray)
     }
 }

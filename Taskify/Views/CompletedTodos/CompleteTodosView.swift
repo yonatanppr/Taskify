@@ -11,16 +11,12 @@ struct CompletedTodosView: View {
 
     var body: some View {
         ZStack {
-            // CHANGE: Use appBackground
-            Color.appBackground
-                .ignoresSafeArea()
-
-            // ADD: Title for the view
+            // REMOVE: Color.appBackground.ignoresSafeArea() - Let ContentView gradient show through
             VStack(alignment: .leading, spacing: 0) {
                 Text("Completed Tasks")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(.primaryText) // Already white
                     .padding([.horizontal, .top])
                     .padding(.bottom, 10)
 
@@ -30,11 +26,11 @@ struct CompletedTodosView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "checkmark.circle.trianglebadge.exclamationmark")
                              .font(.system(size: 50))
-                             .foregroundColor(.secondaryText.opacity(0.6))
+                             .foregroundColor(.secondaryText) // Semi-transparent white
                         Text("No tasks completed yet!")
                             .font(.title3)
                             .fontWeight(.medium)
-                            .foregroundColor(.secondaryText)
+                            .foregroundColor(.secondaryText) // Semi-transparent white
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     Spacer()
@@ -46,22 +42,22 @@ struct CompletedTodosView: View {
                                     // ADD: Checked circle icon
                                     Image(systemName: "checkmark.circle.fill")
                                         .font(.system(size: 22, weight: .medium))
-                                        .foregroundColor(.positiveGreen)
+                                        .foregroundColor(.positiveGreen) // Stays green
                                         .padding(.leading, 16)
 
                                     Text(todo.title)
                                         .font(.system(.headline, design: .rounded))
                                         // CHANGE: Use secondaryText for consistency
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(.secondaryText) // Semi-transparent white
                                         .strikethrough(true, color: .secondaryText)
                                         .padding(.vertical, 18)
 
                                     Spacer()
                                 }
-                                // CHANGE: Use componentBackground
-                                .background(Color.componentBackground)
-                                .cornerRadius(16)
-                                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 3)
+                                // CHANGE: Background to glassy style
+                                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                // REMOVE: .cornerRadius as it's handled by material shape
+                                // REMOVE: .shadow
                                 .padding(.horizontal)
                                 .transition(.asymmetric(
                                     insertion: .scale(scale: 0.95, anchor: .center).combined(with: .opacity),
@@ -77,7 +73,8 @@ struct CompletedTodosView: View {
                                     } label: {
                                         Label("Mark as Incomplete", systemImage: "arrow.uturn.backward.circle")
                                     }
-                                    .tint(.accentOrange)
+                                    // CHANGE: Tint to themeOrange
+                                    .tint(.accentGray)
                                 }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
@@ -87,13 +84,18 @@ struct CompletedTodosView: View {
                                     } label: {
                                         Label("Delete", systemImage: "trash.fill")
                                     }
+                                    // Destructive buttons usually have a default red tint, which is fine.
                                 }
                             }
                         }
                         .padding(.top)
                     }
+                    // ADD: Make ScrollView background clear to see ContentView gradient
+                    .background(Color.clear)
                 }
             }
         }
+        // ADD: Ensure ZStack background is clear
+        .background(Color.clear)
     }
 }

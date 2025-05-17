@@ -7,6 +7,7 @@ struct TodoRowView: View {
     @Binding var reminderDate: Date
     var onToggle: () -> Void
     var onBellTap: () -> Void
+    var onQuickTicToggle: () -> Void
 
     var body: some View {
         HStack(alignment: .center, spacing: 0) { // Use spacing 0 and control with padding
@@ -15,8 +16,8 @@ struct TodoRowView: View {
                 onToggle()
             }) {
                 Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(todo.isDone ? .positiveGreen : .secondaryText.opacity(0.7))
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundColor(todo.isDone ? .positiveGreen : .primaryText) // Keep positiveGreen for checkmark, white for circle
                     .frame(width: 44, height: 44, alignment: .center) // Explicit frame for tap target
             }
             .buttonStyle(PlainButtonStyle()) // Essential for List row buttons
@@ -24,12 +25,26 @@ struct TodoRowView: View {
 
             // --- Title Text (Non-Interactive) ---
             Text(todo.title)
-                .font(.system(.headline, design: .rounded))
-                .foregroundColor(todo.isDone ? .secondaryText : .primaryText)
+                .font(.system(size: 18, weight: .regular, design: .rounded))
+                .foregroundColor(todo.isDone ? .secondaryText : .primaryText) // White text, slightly faded if done
                 .strikethrough(todo.isDone, color: .secondaryText)
                 .padding(.leading, 12) // Space from toggle button
-                .padding(.vertical, 18) // Maintain row height
+                .padding(.vertical, 12) // Maintain row height
                 .allowsHitTesting(false) // Prevent text from capturing taps
+
+            Button(action: {
+                onQuickTicToggle()
+            }) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(todo.isQuickTic ? .quickTicYellow : .primaryText.opacity(0.7)) // quickTicYellow or slightly visible white
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    //.background(todo.isQuickTic ? .quickTicYellow.opacity(0.25) : Color.clear)
+                    .cornerRadius(10)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.leading, 6)
 
             Spacer(minLength: 8) // Ensure some separation
                 .allowsHitTesting(false) // Prevent spacer from capturing taps
@@ -42,9 +57,10 @@ struct TodoRowView: View {
                     .font(.system(size: 18, weight: .medium))
                     .foregroundColor({
                         if let date = todo.reminderDate {
-                            return date < Date() ? Color.reminderOverdue : Color.reminderUpcoming
+                            // set bell to different color if task is overdue
+                            return date < Date() ? .destructiveRed : .quickTicYellow
                         } else {
-                            return .primaryAppBlue.opacity(0.8)
+                            return .primaryText.opacity(0.7)
                         }
                     }())
                     .frame(width: 44, height: 44, alignment: .center) // Explicit frame for tap target
@@ -52,11 +68,12 @@ struct TodoRowView: View {
             .buttonStyle(PlainButtonStyle()) // Essential for List row buttons
             .contentShape(Rectangle())
         }
-        .padding(.horizontal)
-        .padding(.vertical, 6)
-        .background(Color.componentBackground)
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 3)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 4)
+        .background(
+            .ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+        )
+        .padding(.horizontal, 8)
         .id(todo.id)
         // IMPORTANT: No .onTapGesture or .highPriorityGesture on this HStack.
         // Let the List and the Buttons with PlainButtonStyle handle taps.

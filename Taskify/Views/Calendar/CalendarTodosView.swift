@@ -1,14 +1,21 @@
 import SwiftUI
+import SwiftUICalendar
 
 struct CalendarTodosView: View {
     @Binding var todos: [TodoItem]
     @State private var selectedDate: Date = Date()
+    @StateObject private var calendarController = CalendarController()
 
     private var todosForSelectedDate: [TodoItem] {
-        todos.filter {
-            guard let reminderDate = $0.reminderDate else { return false }
-            return Calendar.current.isDate(reminderDate, inSameDayAs: selectedDate)
+        let selectedDay = Calendar.current.startOfDay(for: selectedDate)
+        let matched = todos.filter {
+            let todoDay = Calendar.current.startOfDay(for: $0.reminderDate ?? .distantPast)
+            let isMatch = todoDay == selectedDay
+            print("🔍 \(String(describing: $0.title)) → \(String(describing: $0.reminderDate)) | Matched: \(isMatch)")
+            return isMatch
         }
+        print("📅 Selected Day: \(selectedDay), Matches Found: \(matched.count)")
+        return matched
     }
 
     private var datesWithReminders: [Date] {
@@ -22,31 +29,109 @@ struct CalendarTodosView: View {
         return formatter.string(from: date)
     }
 
+    // Helper to determine day text color for calendar cell
+    private func dayTextColor(for date: YearMonthDay, isSelected: Bool) -> Color {
+        guard let cellDate = date.date else { return .clear }
+        if isSelected {
+            return .white
+        }
+
+        let calendar = Calendar.current
+        let cellComponents = calendar.dateComponents([.year, .month], from: cellDate)
+        return (cellComponents.year == calendarController.yearMonth.year &&
+                cellComponents.month == calendarController.yearMonth.month) ? .primary : .gray
+    }
+
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                DatePicker(
-                    "",
-                    selection: $selectedDate,
-                    displayedComponents: [.date]
-                )
-                .datePickerStyle(.graphical)
-                .accentColor(.primaryAppBlue)
-                .frame(maxHeight: 380)
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.componentBackground)
-                        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 4)
-                )
+                VStack(spacing: 12) {
+                    HStack {
+                        Button(action: {
+                            let current = calendarController.yearMonth
+                            let previous = current.adding(months: -1)
+                            calendarController.scrollTo(year: previous.year, month: previous.month, isAnimate: true)
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.accentGray)
+                        }
+
+                        Spacer()
+
+                        Text("\(calendarController.yearMonth.monthLongString), \(String(calendarController.yearMonth.year))")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primaryText)
+
+                        Spacer()
+
+                        Button(action: {
+                            let current = calendarController.yearMonth
+                            let next = current.adding(months: 1)
+                            calendarController.scrollTo(year: next.year, month: next.month, isAnimate: true)
+                        }) {
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.accentGray)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    CalendarView(calendarController) { date in
+                        GeometryReader { geometry in
+                            ZStack {
+                                if let dayDate = date.date {
+                                    let isSelected = Calendar.current.isDate(dayDate, inSameDayAs: selectedDate)
+                                    let isToday = date.isToday
+
+                                    if isSelected {
+                                        Circle()
+                                            .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.8)
+                                            .background(Color.destructiveRed)
+                                    } else if isToday {
+                                        Circle()
+                                            .stroke(Color.destructiveRed, lineWidth: 1.5)
+                                            .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.8)
+                                    }
+
+                                    Text("\(date.day)")
+                                        .font(.body)
+                                        .fontWeight(isSelected ? .bold : .regular)
+                                        .foregroundColor(dayTextColor(for: date, isSelected: isSelected))
+
+                                    if datesWithReminders.contains(where: { Calendar.current.isDate($0, inSameDayAs: dayDate) }) {
+                                        VStack {
+                                            Spacer()
+                                            Circle()
+                                                .fill(isSelected ? Color.white : Color.destructiveRed)
+                                                .frame(width: 6, height: 6)
+                                                .padding(.bottom, 4)
+                                        }
+                                    }
+                                }
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                if let tapped = date.date {
+                                    selectedDate = tapped
+                                }
+                            }
+                        }
+                    }
+                    .frame(height: 320)
+                    .padding(.horizontal)
+                }
+                .padding(.top)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .padding(.horizontal)
-                .padding(.top, 20)
 
                 VStack(spacing: 16) {
                     Text("Reminders for \(selectedDate, style: .date)")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primaryAppBlue)
+                        .foregroundColor(.primaryText)
                         .padding(.top)
 
                     if todosForSelectedDate.isEmpty {
@@ -60,42 +145,61 @@ struct CalendarTodosView: View {
                                 .font(.headline)
                             Spacer(minLength: 20)
                         }
-                        .frame(maxHeight: .infinity)
                         .padding()
                     } else {
-                        List {
+                        VStack(spacing: 2) {
                             ForEach(todosForSelectedDate, id: \.id) { todo in
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(todo.title)
-                                            .font(.headline)
-                                            .foregroundColor(.primaryText)
-                                        if let date = todo.reminderDate {
-                                            Text(date, style: .time)
-                                                .font(.caption)
-                                                .foregroundColor(.secondaryText)
-                                        }
-                                    }
-                                    Spacer()
-                                    if let date = todo.reminderDate, date > Date() {
-                                        Circle()
-                                            .fill(Color.accentOrange)
-                                            .frame(width: 8, height: 8)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(todo.title)
+                                        .font(.headline)
+                                        .foregroundColor(.primaryText)
+                                    if let date = todo.reminderDate {
+                                        Text(date, style: .time)
+                                            .font(.caption)
+                                            .foregroundColor(.secondaryText)
                                     }
                                 }
-                                .padding(.vertical, 8)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .cornerRadius(12)
                             }
+
+                            Spacer(minLength: 8)
                         }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
+                        .padding()
+                        .frame(maxWidth: .infinity)
                     }
                 }
                 .padding(.horizontal)
 
                 Spacer()
             }
+            .onAppear {
+                print("📆 SELECTED DATE: \(selectedDate)")
+            }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
-            .background(Color.appBackground.ignoresSafeArea())
         }
+        .background(Color.clear)
+    }
+}
+
+// MARK: - YearMonth Extension for Adding Months
+extension YearMonth {
+    func adding(months: Int) -> YearMonth {
+        let calendar = Calendar.current
+        let date = calendar.date(from: DateComponents(year: self.year, month: self.month))!
+        let newDate = calendar.date(byAdding: .month, value: months, to: date)!
+        let components = calendar.dateComponents([.year, .month], from: newDate)
+        return YearMonth(year: components.year!, month: components.month!)
+    }
+}
+
+extension YearMonth {
+    var monthLongString: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.dateFormat = "LLLL"
+        let date = Calendar.current.date(from: DateComponents(year: year, month: month))!
+        return formatter.string(from: date)
     }
 }

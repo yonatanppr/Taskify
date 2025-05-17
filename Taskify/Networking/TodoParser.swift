@@ -17,7 +17,10 @@ func parseTodosFromText(_ text: String, completion: @escaping ([ParsedTodoItem])
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.timeoutInterval = 60
 
-    let isoNow = ISO8601DateFormatter().string(from: Date())
+    let dateFormatter = ISO8601DateFormatter()
+    dateFormatter.timeZone = .current
+    let isoNow = dateFormatter.string(from: Date())
+    print(isoNow)
 
     let messages: [[String: String]] = [
         ["role": "system", "content": """
@@ -91,21 +94,16 @@ func parseTodosFromText(_ text: String, completion: @escaping ([ParsedTodoItem])
                             guard let title = item["title"] as? String else { return nil }
                             var reminderDate: Date? = nil
                             if let reminderString = item["reminder"] as? String {
-                                let isoFormatter = ISO8601DateFormatter()
-                                isoFormatter.formatOptions = [.withInternetDateTime]
-                                reminderDate = isoFormatter.date(from: reminderString)
+                                let localFormatter = DateFormatter()
+                                localFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                                localFormatter.timeZone = .current
+                                reminderDate = localFormatter.date(from: reminderString)
 
                                 if reminderDate == nil {
-                                    isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-                                    reminderDate = isoFormatter.date(from: reminderString)
-                                }
-
-                                // Final fallback using custom formatter without 'Z' or timezone
-                                if reminderDate == nil {
-                                    let customFormatter = DateFormatter()
-                                    customFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-                                    customFormatter.timeZone = TimeZone.current
-                                    reminderDate = customFormatter.date(from: reminderString)
+                                    let fallbackFormatter = ISO8601DateFormatter()
+                                    fallbackFormatter.formatOptions = [.withInternetDateTime]
+                                    fallbackFormatter.timeZone = .current
+                                    reminderDate = fallbackFormatter.date(from: reminderString)
                                 }
 
                                 print("🧪 Attempted to parse '\(reminderString)' → \(String(describing: reminderDate))")

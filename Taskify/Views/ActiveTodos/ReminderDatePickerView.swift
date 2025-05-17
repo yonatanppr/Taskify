@@ -5,55 +5,65 @@ struct ReminderDatePickerView: View {
     @Binding var reminderDate: Date
     var reminderManager: ReminderManaging
     var onDateSelected: (Bool) -> Void
+    var onReminderUpdated: (TodoItem) -> Void
 
     var body: some View {
         ZStack {
-            Color.clear
-
+            // REMOVE: Color.clear - The ZStack will be sized by its content, and the background is applied to the VStack.
             VStack(spacing: 20) {
                 VStack(alignment: .leading, spacing: 16) {
                     DatePicker(
-                        "Select Date", 
+                        "Select Date",
                         selection: $reminderDate,
                         displayedComponents: [.date]
                     )
                     .datePickerStyle(GraphicalDatePickerStyle())
-                    .accentColor(.primaryAppBlue)
+                    // CHANGE: Accent color to themeOrange
+                    .accentColor(.accentGray)
                     .id("datePicker-\(todo.id)")
                     .frame(maxWidth: .infinity)
+                    // ADD: ForegroundColor to make date picker text visible on glassy background
+                    .foregroundColor(.primaryText)
+
 
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Select Time")
                             .font(.headline)
                             .fontWeight(.semibold)
-                            .foregroundColor(.primaryText) 
+                            .foregroundColor(.black)
                             .padding(.leading, 4)
 
                         DatePicker(
-                            "", 
+                            "",
                             selection: $reminderDate,
                             displayedComponents: [.hourAndMinute]
                         )
                         .datePickerStyle(WheelDatePickerStyle())
                         .labelsHidden()
-                        .accentColor(.primaryAppBlue) 
+                        // CHANGE: Accent color to themeOrange
+                        .accentColor(.accentGray)
                         .frame(maxWidth: .infinity)
+                        // ADD: ForegroundColor for wheel picker text
+                        .colorScheme(.light) // To ensure wheel picker text is black on potentially light material
                     }
                 }
 
-                VStack(spacing: 12) { 
+                VStack(spacing: 12) {
                     Button(action: {
                         todo.reminderDate = reminderDate
-                        reminderManager.schedule(for: todo, at: reminderDate) { _ in
+                        reminderManager.schedule(for: todo, at: reminderDate) { updatedTodo in
+                            self.todo = updatedTodo
+                            onReminderUpdated(updatedTodo)
                             onDateSelected(false)
                         }
                     }) {
                         Text("Confirm")
                             .fontWeight(.semibold)
-                            .foregroundColor(.white)
+                            .foregroundColor(.primaryText)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.primaryAppBlue)
+                            // CHANGE: Background to themeOrange
+                            .background(Color.accentGray)
                             .cornerRadius(12)
                     }
 
@@ -67,19 +77,21 @@ struct ReminderDatePickerView: View {
                             .foregroundColor(.destructiveRed)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.appBackground)
-                            .cornerRadius(12)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.secondaryText.opacity(0.3), lineWidth: 1)
+                            // CHANGE: Background to a subtle glassy style for secondary button
+                            .background(
+                                .clear
                             )
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            // REMOVE: Explicit .cornerRadius as it's handled by the material shape
+                            // REMOVE: Overlay as it's not typical for glassy button
                     }
                 }
             }
             .padding()
-            .background(Color.white)
-            .cornerRadius(24)
-            .shadow(radius: 10)
+            // CHANGE: Background to glassy material
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+            // REMOVE: .cornerRadius as it's handled by the material shape
+            // REMOVE: .shadow
             .frame(maxWidth: 360)
             .padding(.horizontal, 16)
         }
