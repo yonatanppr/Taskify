@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2D015F462DC66FC800BA53B1 /* ElegantCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 2D015F452DC66FC800BA53B1 /* ElegantCalendar */; };
 		2D015F492DC6722600BA53B1 /* SwiftUICalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 2D015F482DC6722600BA53B1 /* SwiftUICalendar */; };
+		2D38A9422DD8FFF5009DB328 /* SwiftyChrono in Frameworks */ = {isa = PBXBuildFile; productRef = 2D38A9412DD8FFF5009DB328 /* SwiftyChrono */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D015F492DC6722600BA53B1 /* SwiftUICalendar in Frameworks */,
-				2D015F462DC66FC800BA53B1 /* ElegantCalendar in Frameworks */,
+				2D38A9422DD8FFF5009DB328 /* SwiftyChrono in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,8 +119,8 @@
 			);
 			name = Taskify;
 			packageProductDependencies = (
-				2D015F452DC66FC800BA53B1 /* ElegantCalendar */,
 				2D015F482DC6722600BA53B1 /* SwiftUICalendar */,
+				2D38A9412DD8FFF5009DB328 /* SwiftyChrono */,
 			);
 			productName = ToDoList;
 			productReference = 2D7BB7642DC2BAF000840843 /* Taskify.app */;
@@ -205,8 +205,8 @@
 			mainGroup = 2D7BB75B2DC2BAF000840843;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				2D015F442DC66F9D00BA53B1 /* XCRemoteSwiftPackageReference "ElegantCalendar" */,
 				2D015F472DC671CF00BA53B1 /* XCRemoteSwiftPackageReference "SwiftUICalendar" */,
+				2D38A9402DD8FFF5009DB328 /* XCRemoteSwiftPackageReference "SwiftyChrono" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2D7BB7652DC2BAF000840843 /* Products */;
@@ -567,14 +567,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		2D015F442DC66F9D00BA53B1 /* XCRemoteSwiftPackageReference "ElegantCalendar" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ThasianX/ElegantCalendar";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.3.2;
-			};
-		};
 		2D015F472DC671CF00BA53B1 /* XCRemoteSwiftPackageReference "SwiftUICalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GGJJack/SwiftUICalendar";
@@ -583,18 +575,26 @@
 				minimumVersion = 0.1.14;
 			};
 		};
+		2D38A9402DD8FFF5009DB328 /* XCRemoteSwiftPackageReference "SwiftyChrono" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/4ndrewHarri5/SwiftyChrono.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2D015F452DC66FC800BA53B1 /* ElegantCalendar */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2D015F442DC66F9D00BA53B1 /* XCRemoteSwiftPackageReference "ElegantCalendar" */;
-			productName = ElegantCalendar;
-		};
 		2D015F482DC6722600BA53B1 /* SwiftUICalendar */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2D015F472DC671CF00BA53B1 /* XCRemoteSwiftPackageReference "SwiftUICalendar" */;
 			productName = SwiftUICalendar;
+		};
+		2D38A9412DD8FFF5009DB328 /* SwiftyChrono */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2D38A9402DD8FFF5009DB328 /* XCRemoteSwiftPackageReference "SwiftyChrono" */;
+			productName = SwiftyChrono;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

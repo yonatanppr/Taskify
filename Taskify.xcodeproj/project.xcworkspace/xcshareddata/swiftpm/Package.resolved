@@ -1,24 +1,6 @@
 {
-  "originHash" : "d07234ac29515676819f3c47e50b3388c444c35138fd19942327299d38637be0",
+  "originHash" : "f8ffc95c16d2b1c5ffd218a0d90d31aba301c42f460a9772bab2686eb9909aa7",
   "pins" : [
-    {
-      "identity" : "elegantcalendar",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ThasianX/ElegantCalendar",
-      "state" : {
-        "revision" : "d446234f27e60f5bef15f91c35d384f388ff2c7d",
-        "version" : "4.3.2"
-      }
-    },
-    {
-      "identity" : "elegantpages",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ThasianX/ElegantPages",
-      "state" : {
-        "revision" : "d598ce4824c40296decc84eae5b3c042d3dff842",
-        "version" : "1.4.2"
-      }
-    },
     {
       "identity" : "swiftuicalendar",
       "kind" : "remoteSourceControl",
@@ -26,6 +8,15 @@
       "state" : {
         "revision" : "7ecd220909bc25529e35e2addb513a20abbfec82",
         "version" : "0.1.14"
+      }
+    },
+    {
+      "identity" : "swiftychrono",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/4ndrewHarri5/SwiftyChrono.git",
+      "state" : {
+        "revision" : "137f41a52812361986e2b5e3331d76dbd7153e77",
+        "version" : "1.2.1"
       }
     }
   ],

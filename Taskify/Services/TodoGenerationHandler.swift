@@ -13,35 +13,26 @@ struct TodoGenerationHandler {
         isLoading.wrappedValue = true
         errorMessage.wrappedValue = nil
 
-        do {
-            let items = try await LLMService.shared.generateTodos(from: text)
-            await MainActor.run {
-                if items.isEmpty {
-                    errorMessage.wrappedValue = "Failed to generate todos. Please try again."
-                } else {
-                    for parsed in items {
-                        let newTodo = TodoItem(
-                            title: parsed.title.trimmingCharacters(in: .whitespacesAndNewlines),
-                            reminderDate: parsed.reminder
-                        )
-                        if let reminder = parsed.reminder {
-                            reminderManager.schedule(for: newTodo, at: reminder) { updatedTodo in
-                                todos.wrappedValue.append(updatedTodo)
-                            }
-                        } else {
-                            todos.wrappedValue.append(newTodo)
-                        }
+        // Use on-device parser instead of LLMService
+        let parsed = NaturalLanguageParser.shared.parse(text)
+        await MainActor.run {
+            if parsed.title.isEmpty {
+                errorMessage.wrappedValue = "Failed to parse todo. Please try again."
+            } else {
+                let newTodo = TodoItem(
+                    title: parsed.title.trimmingCharacters(in: .whitespacesAndNewlines),
+                    reminderDate: parsed.reminderDate
+                )
+                if let reminder = parsed.reminderDate {
+                    reminderManager.schedule(for: newTodo, at: reminder) { updatedTodo in
+                        todos.wrappedValue.append(updatedTodo)
                     }
+                } else {
+                    todos.wrappedValue.append(newTodo)
                 }
-                isLoading.wrappedValue = false
-                onComplete()
             }
-        } catch {
-            await MainActor.run {
-                errorMessage.wrappedValue = "Failed to generate todos. Please try again."
-                isLoading.wrappedValue = false
-                onComplete()
-            }
+            isLoading.wrappedValue = false
+            onComplete()
         }
     }
 }
