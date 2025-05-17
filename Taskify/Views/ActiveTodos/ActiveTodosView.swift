@@ -10,6 +10,7 @@ struct ActiveTodosView: View {
     @Binding var showConfirmation: Bool
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
+    @State private var showingSettings = false
 
     @StateObject private var keyboardResponder = KeyboardResponder()
     @State private var currentDateText: String = ""
@@ -89,6 +90,9 @@ struct ActiveTodosView: View {
                 )
             }
         }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
+        }
     }
 
     private func handleNewTodoSubmission() async {
@@ -121,7 +125,7 @@ private var headerBar: some View {
                 .clipShape(Circle())
         }
 
-        Button(action: {}) {
+        Button(action: { showingSettings = true }) {
             Image(systemName: "gearshape")
                 .font(.system(size: 22, weight: .thin))
                 .padding(12)
