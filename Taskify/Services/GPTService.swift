@@ -83,7 +83,9 @@ final class GPTService {
                 print("🔴 [GPTService] Could not convert content to Data")
                 return []
             }
-            let todos = try JSONDecoder().decode([ParsedTodoItem].self, from: todosData)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let todos = try decoder.decode([ParsedTodoItem].self, from: todosData)
             print("🟢 [GPTService] Decoded \(todos.count) todos.")
             return todos
         } catch {
