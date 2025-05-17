@@ -139,7 +139,9 @@ struct ActiveTodosView: View {
 
                         DraggableInputCardView(
                             newTodoText: $newTodoText,
-                            onSubmit: handleNewTodoSubmission,
+                            onSubmit: {
+                                Task { await handleNewTodoSubmission() }
+                            },
                             errorMessage: $errorMessage,
                             todos: $todos
                         )
@@ -177,8 +179,8 @@ struct ActiveTodosView: View {
         }
     }
 
-    private func handleNewTodoSubmission() {
-        TodoGenerationHandler.handleNewTodoSubmission(
+    private func handleNewTodoSubmission() async {
+        await TodoGenerationHandler.handleNewTodoSubmission(
             text: newTodoText,
             todos: $todos,
             isLoading: $isLoading,
