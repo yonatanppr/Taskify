@@ -120,7 +120,11 @@ struct ActiveTodoListSection: View {
                 )
                 .datePickerStyle(.wheel)
                 .labelsHidden()
-                Button("Save") {
+
+                // Check if a reminder is set for this todo
+                let hasReminder = todo.reminderDate != nil
+
+                Button("Set") {
                     if let idx = todos.firstIndex(where: { $0.id == todo.id }) {
                         reminderManager.schedule(for: todos[idx], at: reminderDate) { updatedTodo in
                             DispatchQueue.main.async {
@@ -133,13 +137,23 @@ struct ActiveTodoListSection: View {
                         selectedTodoForReminder = nil
                     }
                 }
-                Button("Delete reminder", role: .cancel) {
-                    if let idx = todos.firstIndex(where: { $0.id == todo.id }) {
-                        reminderManager.remove(for: todos[idx])
-                        todos[idx].reminderDate = nil
-                        todos[idx].reminderID = nil
+                .foregroundColor(.primary)
+
+                if hasReminder {
+                    Button("Remove", role: .destructive) {
+                        if let idx = todos.firstIndex(where: { $0.id == todo.id }) {
+                            reminderManager.remove(for: todos[idx])
+                            todos[idx].reminderDate = nil
+                            todos[idx].reminderID = nil
+                        }
+                        selectedTodoForReminder = nil
                     }
-                    selectedTodoForReminder = nil
+                    .foregroundColor(.destructiveRed)
+                } else {
+                    Button("Cancel", role: .cancel) {
+                        selectedTodoForReminder = nil
+                    }
+                    .foregroundColor(.secondary)
                 }
             }
             .padding()
