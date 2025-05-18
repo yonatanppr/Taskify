@@ -112,6 +112,12 @@ struct ActiveTodoListSection: View {
         }
         .sheet(item: $selectedTodoForReminder) { todo in
             VStack(spacing: 20) {
+                // Drag indicator
+                Capsule()
+                    .fill(Color.gray.opacity(0.4))
+                    .frame(width: 40, height: 5)
+                    .padding(.top, 3)
+                    .padding(.bottom, 8)
                 Text("\(todo.title)").font(.headline)
                 DatePicker(
                     "Reminder",
@@ -121,7 +127,6 @@ struct ActiveTodoListSection: View {
                 .datePickerStyle(.wheel)
                 .labelsHidden()
 
-                // Check if a reminder is set for this todo
                 let hasReminder = todo.reminderDate != nil
 
                 Button("Set") {
@@ -148,7 +153,7 @@ struct ActiveTodoListSection: View {
                         }
                         selectedTodoForReminder = nil
                     }
-                    .foregroundColor(.destructiveRed)
+                    .foregroundColor(.red)
                 } else {
                     Button("Cancel", role: .cancel) {
                         selectedTodoForReminder = nil
@@ -157,7 +162,9 @@ struct ActiveTodoListSection: View {
                 }
             }
             .padding()
-            .presentationDetents([.medium, .large])
+            .presentationBackground(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+            .presentationDetents([.medium])
         }
     }
 }
