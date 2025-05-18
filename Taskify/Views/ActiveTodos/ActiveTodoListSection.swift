@@ -11,6 +11,9 @@ struct ActiveTodoListSection: View {
 
     @State private var todoToDelete: TodoItem?
     @State private var selectedTodoForReminder: TodoItem?
+    @State private var isEditingTitle = false
+    @State private var editedTitle: String = ""
+    @FocusState private var titleFieldIsFocused: Bool
 
     private var filteredTodos: [Binding<TodoItem>] {
         switch taskFilter {
@@ -118,7 +121,59 @@ struct ActiveTodoListSection: View {
                     .frame(width: 40, height: 5)
                     .padding(.top, 3)
                     .padding(.bottom, 8)
-                Text("\(todo.title)").font(.headline)
+                HStack {
+                    if isEditingTitle {
+                        TextField("Title", text: $editedTitle, onCommit: {
+                            if let idx = todos.firstIndex(where: { $0.id == todo.id }) {
+                                todos[idx].title = editedTitle
+                            }
+                            isEditingTitle = false
+                            titleFieldIsFocused = false
+                        })
+                        .font(.headline)
+                        .autocapitalization(.sentences)
+                        .frame(maxWidth: .infinity)
+                        .focused($titleFieldIsFocused)
+                        .onAppear {
+                            DispatchQueue.main.async {
+                                titleFieldIsFocused = true
+                            }
+                        }
+                        .padding(6)
+                        .background(Color(.systemGray6).opacity(0.8))
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.primary.opacity(0.5), lineWidth: 1)
+                        )
+                    } else {
+                        Text(todo.title)
+                            .font(.headline)
+                            .padding(6)
+                    }
+                    Button(action: {
+                        guard !todo.isDone else { return }
+                        if isEditingTitle {
+                            if let idx = todos.firstIndex(where: { $0.id == todo.id }) {
+                                todos[idx].title = editedTitle
+                            }
+                            isEditingTitle = false
+                            titleFieldIsFocused = false
+                        } else {
+                            editedTitle = todo.title
+                            isEditingTitle = true
+                            DispatchQueue.main.async {
+                                titleFieldIsFocused = true
+                            }
+                        }
+                    }) {
+                        Image(systemName: isEditingTitle ? "checkmark" : "pencil")
+                            .foregroundColor(.black)
+                            .padding(.leading, 8)
+                    }
+                    .disabled(todo.isDone)
+                }
+                .padding(.horizontal)
                 DatePicker(
                     "Reminder",
                     selection: $reminderDate,
@@ -165,6 +220,11 @@ struct ActiveTodoListSection: View {
             .presentationBackground(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
             .presentationDetents([.medium])
+            .onAppear {
+                self.editedTitle = todo.title
+                self.isEditingTitle = false
+                self.titleFieldIsFocused = false
+            }
         }
     }
 }
