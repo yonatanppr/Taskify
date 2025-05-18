@@ -119,7 +119,7 @@ private var headerBar: some View {
                     ZStack {
                         Color.clear
                             .background(.ultraThinMaterial)
-                        Color.gray.opacity(0.1)
+                        Color.gray.opacity(0.6)
                     }
                 )
                 .clipShape(Circle())
@@ -134,7 +134,7 @@ private var headerBar: some View {
                     ZStack {
                         Color.clear
                             .background(.ultraThinMaterial)
-                        Color.gray.opacity(0.1)
+                        Color.gray.opacity(0.6)
                     }
                 )
                 .clipShape(Circle())
@@ -145,6 +145,9 @@ private var headerBar: some View {
         Text(currentDateText)
             .font(.system(size: 53, weight: .bold, design: .rounded))
             .foregroundColor(.primaryText)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .truncationMode(.tail)
     }
     .padding(.horizontal, 20)
     .padding(.top, 35)
