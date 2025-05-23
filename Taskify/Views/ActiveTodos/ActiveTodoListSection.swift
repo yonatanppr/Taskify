@@ -29,10 +29,16 @@ struct ActiveTodoListSection: View {
                     guard let d1 = $0.wrappedValue.reminderDate, let d2 = $1.wrappedValue.reminderDate else { return false }
                     return d1 < d2
                 }
-        //case .completed:
-            //return $todos.filter { $0.wrappedValue.isDone }
+        case .completed:
+            return $todos.filter { $0.wrappedValue.isDone }
         case .quickTics:
             return $todos.filter { $0.wrappedValue.isQuickTic && !$0.wrappedValue.isDone }
+        case .today:
+            let calendar = Calendar.current
+            return $todos.filter {
+                guard let date = $0.wrappedValue.reminderDate else { return false }
+                return calendar.isDateInToday(date) && !$0.wrappedValue.isDone
+            }
         }
     }
 

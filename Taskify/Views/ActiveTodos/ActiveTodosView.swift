@@ -15,17 +15,26 @@ struct ActiveTodosView: View {
     @StateObject private var keyboardResponder = KeyboardResponder()
     @State private var currentDateText: String = ""
 
-    enum TaskFilter: String, Identifiable {
+    @AppStorage("selectedFilters") private var selectedFiltersRaw: String = "[]"
+    
+    enum TaskFilter: String, CaseIterable {
         case all = "All"
         case upcoming = "Upcoming"
+        case completed = "Completed"
+        case today = "Today"
         case quickTics = "Quick Tics"
-        // case completed = "Completed" // Removed this case
-
-        var id: String { self.rawValue }
-
-        static var allCases: [TaskFilter] {
-            [.all, .upcoming, .quickTics] // Updated allCases
+    }
+    
+    private var selectedFilters: [TaskFilter] {
+        // Decode the JSON string from settings into an array of raw values
+        guard let data = selectedFiltersRaw.data(using: .utf8),
+              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
+            print("[DEBUG] selectedFilters: using default [.all, .upcoming, .completed]")
+            return [.all, .upcoming, .quickTics]
         }
+        let filters = decoded.compactMap { TaskFilter(rawValue: $0) }
+        print("[DEBUG] selectedFilters computed: \(filters.map { $0.rawValue })")
+        return Array(filters.prefix(3))
     }
 
     @State private var taskFilter: TaskFilter = .all
@@ -90,8 +99,28 @@ struct ActiveTodosView: View {
                 )
             }
         }
-        .sheet(isPresented: $showingSettings) {
+        .sheet(isPresented: $showingSettings, onDismiss: {
+            updateTaskFilterIfNeeded()
+        }) {
             SettingsView()
+        }
+        .onChange(of: selectedFiltersRaw) { newValue in
+            print("[DEBUG] selectedFiltersRaw changed: \(newValue)")
+            updateTaskFilterIfNeeded()
+        }
+        .onChange(of: selectedFilters) { newFilters in
+            print("[DEBUG] selectedFilters changed: \(newFilters)")
+            updateTaskFilterIfNeeded()
+        }
+        .onAppear {
+            updateTaskFilterIfNeeded()
+        }
+    }
+
+    private func updateTaskFilterIfNeeded() {
+        if !selectedFilters.contains(taskFilter) {
+            taskFilter = selectedFilters.first ?? .all
+            print("[DEBUG] taskFilter updated to: \(taskFilter.rawValue)")
         }
     }
 
@@ -162,7 +191,7 @@ private var headerBar: some View {
 
 private var filterBar: some View {
     HStack(spacing: 0) {
-        ForEach(TaskFilter.allCases) { filter in
+        ForEach(selectedFilters, id: \.self) { filter in
             Button(action: {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                     taskFilter = filter
@@ -186,8 +215,12 @@ private var filterBar: some View {
             }
             .contentShape(Rectangle())
             .buttonStyle(PlainButtonStyle())
+            .onAppear {
+                print("[DEBUG] Rendering filter button for: \(filter.rawValue)")
+            }
         }
     }
+    .id(selectedFilters.map { $0.rawValue }.joined(separator: "-")) // Stronger ID to force update
     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     .padding(.horizontal, 20)
 }

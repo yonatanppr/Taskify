@@ -17,6 +17,3 @@ struct TodoStorage {
         return todos
     }
 }
-
-// Note: `TodoItem` must conform to `Codable`, and include a default value for `isQuickTic` (e.g., `isQuickTic: Bool = false`)
-// to ensure older saved data without this property can still be decoded safely.
