@@ -104,6 +104,8 @@ struct ActiveTodosView: View {
             reminderManager: reminderManager
         ) {
             newTodoText = ""
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
         }
     }
 // MARK: - Extracted Subviews

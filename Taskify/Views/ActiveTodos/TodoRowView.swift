@@ -15,6 +15,8 @@ struct TodoRowView: View {
             HStack(alignment: .center, spacing: 0) {
                 // --- Toggle Button ---
                 Button(action: {
+                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                    generator.impactOccurred()
                     onToggle()
                 }) {
                     Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
