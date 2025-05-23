@@ -45,7 +45,7 @@ struct DraggableInputCardView: View {
                         
                         Button(action: {
                             onSubmit()
-                            inputFieldIsFocused = false
+                            inputFieldIsFocused = true
                         }) {
                             ZStack {
                                 Circle()
