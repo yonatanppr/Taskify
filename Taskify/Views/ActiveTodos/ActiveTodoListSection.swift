@@ -95,8 +95,10 @@ struct ActiveTodoListSection: View {
         List {
             ForEach(filteredTodos, id: \.wrappedValue.id) { todoBinding in
                 todoRow(for: todoBinding)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: filteredTodos.map { $0.wrappedValue.id })
         .padding(.bottom, 120) // adjust as needed based on card height
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
