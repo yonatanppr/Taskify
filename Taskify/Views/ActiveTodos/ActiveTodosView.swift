@@ -33,9 +33,7 @@ struct ActiveTodosView: View {
             return [.all, .upcoming, .quickTics]
         }
         let filters = decoded.compactMap { TaskFilter(rawValue: $0) }
-        //print("[DEBUG] selectedFilters computed: \(filters.map { $0.rawValue })")
         let widgetTodoCount = UserDefaults.standard.integer(forKey: "widget_todo_count_debug")
-        print("Widget decoded todos count: \(widgetTodoCount)")
         return Array(filters.prefix(3))
     }
     
@@ -120,6 +118,9 @@ struct ActiveTodosView: View {
     private func updateTaskFilterIfNeeded() {
         if !selectedFilters.contains(taskFilter) {
             taskFilter = selectedFilters.first ?? .all
+            print("[DEBUG] selectedFilters updated: \(selectedFilters.map { $0.rawValue })")
+            let widgetTodoCount = UserDefaults.standard.integer(forKey: "widget_todo_count_debug")
+            print("[DEBUG] Widget decoded todos count: \(widgetTodoCount)")
         }
     }
     
