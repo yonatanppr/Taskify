@@ -23,7 +23,7 @@ struct ReminderDatePickerView: View {
                     .id("datePicker-\(todo.id)")
                     .frame(maxWidth: .infinity)
                     // ADD: ForegroundColor to make date picker text visible on glassy background
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Color("TextColor"))
 
 
                     VStack(alignment: .leading, spacing: 6) {
@@ -59,7 +59,7 @@ struct ReminderDatePickerView: View {
                     }) {
                         Text("Confirm")
                             .fontWeight(.semibold)
-                            .foregroundColor(.primaryText)
+                            .foregroundColor(Color("TextColor"))
                             .padding()
                             .frame(maxWidth: .infinity)
                             // CHANGE: Background to themeOrange

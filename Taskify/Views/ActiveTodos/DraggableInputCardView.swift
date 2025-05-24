@@ -64,7 +64,7 @@ struct DraggableInputCardView: View {
                     if let message = errorMessage {
                         Text(message)
                             .font(.caption)
-                            .foregroundColor(.primaryText)
+                            .foregroundColor(Color("TextColor"))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(Color.destructiveRed.opacity(0.9))
@@ -93,9 +93,9 @@ struct DraggableInputCardView: View {
             .frame(maxHeight: .infinity)
             .background(
                 ZStack {
-                    Color.clear
-                        .background(.ultraThinMaterial)
-                    Color.gray.opacity(0.4)
+                //    Color.clear
+                      //  .background(.ultraThinMaterial)
+                    Color("DraggableCardColor")
                 }
             )
             .cornerRadius(cardCornerRadius, corners: [.topLeft, .topRight])

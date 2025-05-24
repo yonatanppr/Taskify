@@ -39,19 +39,7 @@ struct ContentView: View {
                 }
             }
             .background(
-                Group {
-                    if UITraitCollection.current.userInterfaceStyle == .dark {
-                        Image("background-dark")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .ignoresSafeArea(.all)
-                    } else {
-                        Image("background")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .ignoresSafeArea(.all)
-                    }
-                }
+                Color("BackgroundColor")
             )
         }
         .onAppear {

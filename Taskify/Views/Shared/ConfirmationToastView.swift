@@ -6,11 +6,11 @@ struct ConfirmationToastView: View {
     var body: some View {
         HStack(spacing: 8) { 
             Image(systemName: "checkmark.circle.fill")
-                .foregroundColor(.white)
+                .foregroundColor(Color("TextColor"))
             Text(message)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundColor(.white)
+                .foregroundColor(Color("TextColor"))
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)

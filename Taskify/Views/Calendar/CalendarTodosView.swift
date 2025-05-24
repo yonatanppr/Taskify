@@ -34,7 +34,7 @@ struct CalendarTodosView: View {
     private func dayTextColor(for date: YearMonthDay, isSelected: Bool) -> Color {
         guard let cellDate = date.date else { return .clear }
         if isSelected {
-            return .white
+            return Color("TextColor")
         }
 
         let calendar = Calendar.current
@@ -63,7 +63,7 @@ struct CalendarTodosView: View {
                         Text("\(calendarController.yearMonth.monthLongString), \(String(calendarController.yearMonth.year))")
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundColor(.primaryText)
+                            .foregroundColor(Color("TextColor"))
 
                         Spacer()
 
@@ -105,7 +105,7 @@ struct CalendarTodosView: View {
                                         VStack {
                                             Spacer()
                                             Circle()
-                                                .fill(isSelected ? Color.white : Color.destructiveRed)
+                                                .fill(isSelected ? Color("TextColor") : Color.destructiveRed)
                                                 .frame(width: 6, height: 6)
                                                 .padding(.bottom, 4)
                                         }
@@ -132,7 +132,7 @@ struct CalendarTodosView: View {
                     Text("Reminders for \(selectedDate, style: .date)")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primaryText)
+                        .foregroundColor(Color("TextColor"))
                         .padding(.top)
 
                     if todosForSelectedDate.isEmpty {
@@ -153,7 +153,7 @@ struct CalendarTodosView: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(todo.title)
                                         .font(.headline)
-                                        .foregroundColor(.primaryText)
+                                        .foregroundColor(Color("TextColor"))
                                     if let date = todo.reminderDate {
                                         Text(date, style: .time)
                                             .font(.caption)

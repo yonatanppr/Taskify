@@ -149,12 +149,12 @@ struct ActiveTodosView: View {
                 Image(systemName: "person.circle")
                     .font(.system(size: 22, weight: .thin))
                     .padding(12)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("TextColor"))
                     .background(
                         ZStack {
                             Color.clear
                                 .background(.ultraThinMaterial)
-                            Color.gray.opacity(0.6)
+                            Color("StandardButtonColor")
                         }
                     )
                     .clipShape(Circle())
@@ -164,12 +164,12 @@ struct ActiveTodosView: View {
                 Image(systemName: "gearshape")
                     .font(.system(size: 22, weight: .thin))
                     .padding(12)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("TextColor"))
                     .background(
                         ZStack {
                             Color.clear
                                 .background(.ultraThinMaterial)
-                            Color.gray.opacity(0.6)
+                            Color("StandardButtonColor")
                         }
                     )
                     .clipShape(Circle())
@@ -179,7 +179,7 @@ struct ActiveTodosView: View {
             
             Text(currentDateText)
                 .font(.system(size: 53, weight: .bold, design: .rounded))
-                .foregroundColor(.primaryText)
+                .foregroundColor(Color("TextColor"))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .truncationMode(.tail)
@@ -204,7 +204,7 @@ struct ActiveTodosView: View {
                     ZStack {
                         if taskFilter == filter {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.accentGray.opacity(0.6))
+                                .fill(Color("SelectedButtonColor"))
                                 .matchedGeometryEffect(id: "filterBackground", in: filterAnimation)
                                 .allowsHitTesting(false)
                         }
@@ -212,7 +212,7 @@ struct ActiveTodosView: View {
                         Text(filter.rawValue)
                             .font(.footnote)
                             .fontWeight(.medium)
-                            .foregroundColor(taskFilter == filter ? .primaryText : .primaryText)
+                            .foregroundColor(Color("TextColor"))
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 32)
@@ -222,7 +222,7 @@ struct ActiveTodosView: View {
             }
         }
         .id(selectedFilters.map { $0.rawValue }.joined(separator: "-")) // Stronger ID to force update
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color("StandardButtonColor"), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .padding(.horizontal, 20)
     }
     

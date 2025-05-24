@@ -8,7 +8,7 @@ struct ViewToggleButton: View {
         Image(systemName: isShowingCalendarView ? "list.bullet" : "calendar") // Swapped icons to better represent target view
             .font(.system(size: 24, weight: .semibold)) // Slightly adjusted size
             // CHANGE: Icon color to white if background is blue
-            .foregroundColor(.primaryText)
+            .foregroundColor(Color("TextColor"))
             .padding(20) // Adjusted padding
             // CHANGE: Background to themeOrange
             .background(Color.accentGray)

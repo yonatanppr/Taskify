@@ -15,7 +15,7 @@ struct TodoInputBarView: View {
                 TextField("", text: $newTodoText)
                     .disableAutocorrection(false)
                     .font(.system(size: 35, weight: .bold))
-                    .foregroundColor(.primaryText)
+                    .foregroundColor(Color("TextColor"))
                     .accentColor(.accentGray)
                     .padding(.leading, 16)
                     .submitLabel(.done)
@@ -29,7 +29,7 @@ struct TodoInputBarView: View {
                         newTodoText.isEmpty
                             ? VStack(alignment: .leading) {
                                 Text(placeholderText)
-                                    .foregroundColor(.primaryText)
+                                    .foregroundColor(Color("TextColor"))
                                     .font(.system(size: 35, weight: .bold))
                                     .lineLimit(nil)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -49,13 +49,13 @@ struct TodoInputBarView: View {
                 }) {
                     ZStack {
                         Circle()
-                            .fill(Color.plusCircle)
+                            .fill(Color("SubmitButtonColor"))
                             .frame(width: 55, height: 55)
                         Image(systemName: "plus")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 25, height: 25)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color("TextColor"))
                     }
                 }
                 .padding(.trailing, 16)
