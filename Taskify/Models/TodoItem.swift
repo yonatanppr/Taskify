@@ -3,7 +3,7 @@ import Foundation
 
 
 struct TodoItem: Identifiable, Codable, Equatable {
-    var id = UUID()
+    var id: String
     var title: String
     var isDone: Bool = false
     var reminderDate: Date? = nil

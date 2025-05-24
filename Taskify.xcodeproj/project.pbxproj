@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		2D015F492DC6722600BA53B1 /* SwiftUICalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 2D015F482DC6722600BA53B1 /* SwiftUICalendar */; };
 		2D38A9422DD8FFF5009DB328 /* SwiftyChrono in Frameworks */ = {isa = PBXBuildFile; productRef = 2D38A9412DD8FFF5009DB328 /* SwiftyChrono */; };
+		2DB438CC2DE107CB003AE675 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB438CB2DE107CB003AE675 /* WidgetKit.framework */; };
+		2DB438CE2DE107CB003AE675 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB438CD2DE107CB003AE675 /* SwiftUI.framework */; };
+		2DB438DF2DE107CC003AE675 /* TaskifyWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2DB438C92DE107CB003AE675 /* TaskifyWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,13 +29,48 @@
 			remoteGlobalIDString = 2D7BB7632DC2BAF000840843;
 			remoteInfo = ToDoList;
 		};
+		2DB438DD2DE107CC003AE675 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2D7BB75C2DC2BAF000840843 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2DB438C82DE107CB003AE675;
+			remoteInfo = TaskifyWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2DB438E42DE107CC003AE675 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2DB438DF2DE107CC003AE675 /* TaskifyWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2D7BB7642DC2BAF000840843 /* Taskify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Taskify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7BB7712DC2BAF100840843 /* TaskifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskifyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DB438C92DE107CB003AE675 /* TaskifyWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TaskifyWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DB438CB2DE107CB003AE675 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		2DB438CD2DE107CB003AE675 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		2DB438E62DE10830003AE675 /* TaskifyWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TaskifyWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2DB438E02DE107CC003AE675 /* Exceptions for "TaskifyWidget" folder in "TaskifyWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2DB438C82DE107CB003AE675 /* TaskifyWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2D7BB7662DC2BAF000840843 /* Taskify */ = {
@@ -48,6 +86,14 @@
 		2D7BB77E2DC2BAF100840843 /* TaskifyUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = TaskifyUITests;
+			sourceTree = "<group>";
+		};
+		2DB438CF2DE107CB003AE675 /* TaskifyWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2DB438E02DE107CC003AE675 /* Exceptions for "TaskifyWidget" folder in "TaskifyWidgetExtension" target */,
+			);
+			path = TaskifyWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -76,15 +122,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2DB438C62DE107CB003AE675 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2DB438CE2DE107CB003AE675 /* SwiftUI.framework in Frameworks */,
+				2DB438CC2DE107CB003AE675 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		2D7BB75B2DC2BAF000840843 = {
 			isa = PBXGroup;
 			children = (
+				2DB438E62DE10830003AE675 /* TaskifyWidgetExtension.entitlements */,
 				2D7BB7662DC2BAF000840843 /* Taskify */,
 				2D7BB7742DC2BAF100840843 /* TaskifyTests */,
 				2D7BB77E2DC2BAF100840843 /* TaskifyUITests */,
+				2DB438CF2DE107CB003AE675 /* TaskifyWidget */,
+				2DB438CA2DE107CB003AE675 /* Frameworks */,
 				2D7BB7652DC2BAF000840843 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,8 +153,18 @@
 				2D7BB7642DC2BAF000840843 /* Taskify.app */,
 				2D7BB7712DC2BAF100840843 /* TaskifyTests.xctest */,
 				2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */,
+				2DB438C92DE107CB003AE675 /* TaskifyWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2DB438CA2DE107CB003AE675 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2DB438CB2DE107CB003AE675 /* WidgetKit.framework */,
+				2DB438CD2DE107CB003AE675 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,10 +177,12 @@
 				2D7BB7602DC2BAF000840843 /* Sources */,
 				2D7BB7612DC2BAF000840843 /* Frameworks */,
 				2D7BB7622DC2BAF000840843 /* Resources */,
+				2DB438E42DE107CC003AE675 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2DB438DE2DE107CC003AE675 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				2D7BB7662DC2BAF000840843 /* Taskify */,
@@ -172,6 +242,28 @@
 			productReference = 2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		2DB438C82DE107CB003AE675 /* TaskifyWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2DB438E12DE107CC003AE675 /* Build configuration list for PBXNativeTarget "TaskifyWidgetExtension" */;
+			buildPhases = (
+				2DB438C52DE107CB003AE675 /* Sources */,
+				2DB438C62DE107CB003AE675 /* Frameworks */,
+				2DB438C72DE107CB003AE675 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2DB438CF2DE107CB003AE675 /* TaskifyWidget */,
+			);
+			name = TaskifyWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = TaskifyWidgetExtension;
+			productReference = 2DB438C92DE107CB003AE675 /* TaskifyWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -192,6 +284,9 @@
 					2D7BB77A2DC2BAF100840843 = {
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 2D7BB7632DC2BAF000840843;
+					};
+					2DB438C82DE107CB003AE675 = {
+						CreatedOnToolsVersion = 16.3;
 					};
 				};
 			};
@@ -216,6 +311,7 @@
 				2D7BB7632DC2BAF000840843 /* Taskify */,
 				2D7BB7702DC2BAF100840843 /* TaskifyTests */,
 				2D7BB77A2DC2BAF100840843 /* TaskifyUITests */,
+				2DB438C82DE107CB003AE675 /* TaskifyWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -236,6 +332,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2D7BB7792DC2BAF100840843 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2DB438C72DE107CB003AE675 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -266,6 +369,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2DB438C52DE107CB003AE675 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -278,6 +388,11 @@
 			isa = PBXTargetDependency;
 			target = 2D7BB7632DC2BAF000840843 /* Taskify */;
 			targetProxy = 2D7BB77C2DC2BAF100840843 /* PBXContainerItemProxy */;
+		};
+		2DB438DE2DE107CC003AE675 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2DB438C82DE107CB003AE675 /* TaskifyWidgetExtension */;
+			targetProxy = 2DB438DD2DE107CC003AE675 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -406,6 +521,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Taskify/Taskify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BL9H4P7BNG;
@@ -434,6 +550,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Taskify/Taskify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BL9H4P7BNG;
@@ -529,6 +646,62 @@
 			};
 			name = Release;
 		};
+		2DB438E22DE107CC003AE675 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TaskifyWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BL9H4P7BNG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TaskifyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TaskifyWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yonatan.Taskify.TaskifyWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2DB438E32DE107CC003AE675 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TaskifyWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BL9H4P7BNG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TaskifyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TaskifyWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yonatan.Taskify.TaskifyWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -564,6 +737,15 @@
 			buildConfigurations = (
 				2D7BB78C2DC2BAF100840843 /* Debug */,
 				2D7BB78D2DC2BAF100840843 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2DB438E12DE107CC003AE675 /* Build configuration list for PBXNativeTarget "TaskifyWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2DB438E22DE107CC003AE675 /* Debug */,
+				2DB438E32DE107CC003AE675 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

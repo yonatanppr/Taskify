@@ -59,7 +59,6 @@ struct SettingsView: View {
                         if let data = try? JSONEncoder().encode(ids),
                            let string = String(data: data, encoding: .utf8) {
                             selectedFiltersRaw = string
-                            print("[DEBUG] [Done] Wrote selectedFiltersRaw: \(string)")
                         }
                         print("[DEBUG] Done tapped. Final selectedFilters: \(selectedFilters.map { $0.label })")
                         dismiss()

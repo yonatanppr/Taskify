@@ -20,6 +20,7 @@ struct TodoGenerationHandler {
                 errorMessage.wrappedValue = "Failed to parse todo. Please try again."
             } else {
                 let newTodo = TodoItem(
+                    id: UUID().uuidString,
                     title: parsed.title.trimmingCharacters(in: .whitespacesAndNewlines),
                     reminderDate: parsed.reminderDate
                 )

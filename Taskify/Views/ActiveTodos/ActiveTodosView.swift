@@ -11,10 +11,10 @@ struct ActiveTodosView: View {
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
     @State private var showingSettings = false
-
+    
     @StateObject private var keyboardResponder = KeyboardResponder()
     @State private var currentDateText: String = ""
-
+    
     @AppStorage("selectedFilters") private var selectedFiltersRaw: String = "[]"
     
     enum TaskFilter: String, CaseIterable {
@@ -33,16 +33,18 @@ struct ActiveTodosView: View {
             return [.all, .upcoming, .quickTics]
         }
         let filters = decoded.compactMap { TaskFilter(rawValue: $0) }
-        print("[DEBUG] selectedFilters computed: \(filters.map { $0.rawValue })")
+        //print("[DEBUG] selectedFilters computed: \(filters.map { $0.rawValue })")
+        let widgetTodoCount = UserDefaults.standard.integer(forKey: "widget_todo_count_debug")
+        print("Widget decoded todos count: \(widgetTodoCount)")
         return Array(filters.prefix(3))
     }
-
+    
     @State private var taskFilter: TaskFilter = .all
     @Namespace private var filterAnimation
-
+    
     private let collapsedCardVisibleHeight: CGFloat = 140
-
-
+    
+    
     var body: some View {
         ZStack {
             GeometryReader { geometryOfActiveTodosView in
@@ -57,8 +59,8 @@ struct ActiveTodosView: View {
                         .padding(.horizontal, 16)
                         .frame(maxWidth: .infinity)
                         .zIndex(0)
-
-
+                        
+                        
                         DraggableInputCardView(
                             newTodoText: $newTodoText,
                             onSubmit: {
@@ -68,7 +70,7 @@ struct ActiveTodosView: View {
                             todos: $todos
                         )
                         .zIndex(1)
-
+                        
                         if showConfirmation {
                             VStack {
                                 Spacer()
@@ -87,7 +89,7 @@ struct ActiveTodosView: View {
             }
             .background(Color.clear)
             .ignoresSafeArea(.keyboard, edges: .bottom)
-
+            
             if let index = showingDatePickerForIndex {
                 ReminderOverlayView(
                     index: index,
@@ -105,25 +107,22 @@ struct ActiveTodosView: View {
             SettingsView()
         }
         .onChange(of: selectedFiltersRaw) { newValue in
-            print("[DEBUG] selectedFiltersRaw changed: \(newValue)")
             updateTaskFilterIfNeeded()
         }
         .onChange(of: selectedFilters) { newFilters in
-            print("[DEBUG] selectedFilters changed: \(newFilters)")
             updateTaskFilterIfNeeded()
         }
         .onAppear {
             updateTaskFilterIfNeeded()
         }
     }
-
+    
     private func updateTaskFilterIfNeeded() {
         if !selectedFilters.contains(taskFilter) {
             taskFilter = selectedFilters.first ?? .all
-            print("[DEBUG] taskFilter updated to: \(taskFilter.rawValue)")
         }
     }
-
+    
     private func handleNewTodoSubmission() async {
         await TodoGenerationHandler.handleNewTodoSubmission(
             text: newTodoText,
@@ -137,116 +136,113 @@ struct ActiveTodosView: View {
             generator.impactOccurred()
         }
     }
-// MARK: - Extracted Subviews
-
-private var headerBar: some View {
-    HStack(spacing: 12) {
-        Button(action: {}) {
-            Image(systemName: "person.circle")
-                .font(.system(size: 22, weight: .thin))
-                .padding(12)
-                .foregroundColor(.white)
-                .background(
-                    ZStack {
-                        Color.clear
-                            .background(.ultraThinMaterial)
-                        Color.gray.opacity(0.6)
-                    }
-                )
-                .clipShape(Circle())
-        }
-
-        Button(action: { showingSettings = true }) {
-            Image(systemName: "gearshape")
-                .font(.system(size: 22, weight: .thin))
-                .padding(12)
-                .foregroundColor(.white)
-                .background(
-                    ZStack {
-                        Color.clear
-                            .background(.ultraThinMaterial)
-                        Color.gray.opacity(0.6)
-                    }
-                )
-                .clipShape(Circle())
-        }
-
-        Spacer()
-
-        Text(currentDateText)
-            .font(.system(size: 53, weight: .bold, design: .rounded))
-            .foregroundColor(.primaryText)
-            .lineLimit(1)
-            .minimumScaleFactor(0.7)
-            .truncationMode(.tail)
-    }
-    .padding(.horizontal, 20)
-    .padding(.top, 35)
-    .onAppear {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM"
-        currentDateText = formatter.string(from: Date())
-    }
-}
-
-private var filterBar: some View {
-    HStack(spacing: 0) {
-        ForEach(selectedFilters, id: \.self) { filter in
-            Button(action: {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    taskFilter = filter
-                }
-            }) {
-                ZStack {
-                    if taskFilter == filter {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.accentGray.opacity(0.6))
-                            .matchedGeometryEffect(id: "filterBackground", in: filterAnimation)
-                            .allowsHitTesting(false)
-                    }
-
-                    Text(filter.rawValue)
-                        .font(.footnote)
-                        .fontWeight(.medium)
-                        .foregroundColor(taskFilter == filter ? .primaryText : .primaryText)
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: 32)
+    // MARK: - Extracted Subviews
+    
+    private var headerBar: some View {
+        HStack(spacing: 12) {
+            Button(action: {}) {
+                Image(systemName: "person.circle")
+                    .font(.system(size: 22, weight: .thin))
+                    .padding(12)
+                    .foregroundColor(.white)
+                    .background(
+                        ZStack {
+                            Color.clear
+                                .background(.ultraThinMaterial)
+                            Color.gray.opacity(0.6)
+                        }
+                    )
+                    .clipShape(Circle())
             }
-            .contentShape(Rectangle())
-            .buttonStyle(PlainButtonStyle())
-            .onAppear {
-                print("[DEBUG] Rendering filter button for: \(filter.rawValue)")
+            
+            Button(action: { showingSettings = true }) {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 22, weight: .thin))
+                    .padding(12)
+                    .foregroundColor(.white)
+                    .background(
+                        ZStack {
+                            Color.clear
+                                .background(.ultraThinMaterial)
+                            Color.gray.opacity(0.6)
+                        }
+                    )
+                    .clipShape(Circle())
+            }
+            
+            Spacer()
+            
+            Text(currentDateText)
+                .font(.system(size: 53, weight: .bold, design: .rounded))
+                .foregroundColor(.primaryText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .truncationMode(.tail)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 35)
+        .onAppear {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd MMMM"
+            currentDateText = formatter.string(from: Date())
+        }
+    }
+    
+    private var filterBar: some View {
+        HStack(spacing: 0) {
+            ForEach(selectedFilters, id: \.self) { filter in
+                Button(action: {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                        taskFilter = filter
+                    }
+                }) {
+                    ZStack {
+                        if taskFilter == filter {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.accentGray.opacity(0.6))
+                                .matchedGeometryEffect(id: "filterBackground", in: filterAnimation)
+                                .allowsHitTesting(false)
+                        }
+                        
+                        Text(filter.rawValue)
+                            .font(.footnote)
+                            .fontWeight(.medium)
+                            .foregroundColor(taskFilter == filter ? .primaryText : .primaryText)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 32)
+                }
+                .contentShape(Rectangle())
+                .buttonStyle(PlainButtonStyle())
             }
         }
+        .id(selectedFilters.map { $0.rawValue }.joined(separator: "-")) // Stronger ID to force update
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .padding(.horizontal, 20)
     }
-    .id(selectedFilters.map { $0.rawValue }.joined(separator: "-")) // Stronger ID to force update
-    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-    .padding(.horizontal, 20)
-}
-
-private var todoSection: some View {
-    ActiveTodoListSection(
-        todos: $todos,
-        taskFilter: taskFilter,
-        reminderDate: $reminderDate,
-        showConfirmation: $showConfirmation,
-        reminderManager: reminderManager
-    )
-    .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),
-                            removal: .opacity))
-    .animation(.spring(response: 0.4, dampingFraction: 0.75), value: taskFilter)
-}
-
-private var loadingIndicator: some View {
-    Group {
-        if isLoading {
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .accentGray))
-                .scaleEffect(1.4)
-                .transition(.scale.animation(.spring(response: 0.3, dampingFraction: 0.6)))
+    
+    private var todoSection: some View {
+        ActiveTodoListSection(
+            todos: $todos,
+            taskFilter: taskFilter,
+            reminderDate: $reminderDate,
+            showConfirmation: $showConfirmation,
+            reminderManager: reminderManager
+        )
+        .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .opacity))
+        .animation(.spring(response: 0.4, dampingFraction: 0.75), value: taskFilter)
+    }
+    
+    private var loadingIndicator: some View {
+        Group {
+            if isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .accentGray))
+                    .scaleEffect(1.4)
+                    .transition(.scale.animation(.spring(response: 0.3, dampingFraction: 0.6)))
+            }
         }
     }
-}
-
+    
 }
