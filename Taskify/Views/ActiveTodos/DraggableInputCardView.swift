@@ -42,7 +42,7 @@ struct DraggableInputCardView: View {
 
                     HStack(alignment: .center, spacing: 8) {
                         TodoInputBarView(newTodoText: $newTodoText, onSubmit: onSubmit, isInputActive: $inputFieldIsFocused)
-                        
+                        /*
                         Button(action: {
                             onSubmit()
                             inputFieldIsFocused = true
@@ -57,7 +57,7 @@ struct DraggableInputCardView: View {
                                     .frame(width: 25, height: 25)
                                     .foregroundColor(.accentGray)
                             }
-                        }
+                        }*/
                     }
                     .padding(.horizontal)
 

@@ -9,6 +9,7 @@ extension Color {
     static let shadowGray = Color.black.opacity(0.15)
 
     // MARK: - Semantic Colors
+    static let plusCircle = Color(red: 1.0, green: 0.53, blue: 0.1)
     static let accentGray = Color.gray//Color(red: 0.2, green: 0, blue: 0.8).opacity(0.5) // Standard blue - For accents
     static let destructiveRed = Color(red: 1.0, green: 0.1, blue: 0.2).opacity(0.9) // Muted red for destructive actions
     static let positiveGreen = Color(red: 0.7, green: 0.9, blue: 0.7)      // Consistent pastel green - for completed checkmark
