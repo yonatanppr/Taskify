@@ -13,7 +13,7 @@ class ContentViewModel: ObservableObject {
     // ADD: @MainActor to ensure UI related initializations are on the main thread
     @MainActor
     func preloadApp() async {
-        todos = TodoStorage.load()
+        todos = SharedStorage.loadTodos()
         let _ = UITextField() // Warm up UIKit text input system
         withAnimation(.easeOut(duration: 0.3)) {
             isReady = true

@@ -60,7 +60,7 @@ struct ContentView: View {
             }
         }
         .onChange(of: viewModel.todos) {
-            TodoStorage.save(viewModel.todos)
+            SharedStorage.saveTodos(viewModel.todos)
         }
     }
 }

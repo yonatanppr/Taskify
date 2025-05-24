@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2D015F492DC6722600BA53B1 /* SwiftUICalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 2D015F482DC6722600BA53B1 /* SwiftUICalendar */; };
 		2D38A9422DD8FFF5009DB328 /* SwiftyChrono in Frameworks */ = {isa = PBXBuildFile; productRef = 2D38A9412DD8FFF5009DB328 /* SwiftyChrono */; };
+		2D60C9FF2DE210D700791797 /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D60C9FE2DE210CF00791797 /* SharedStorage.swift */; };
+		2D60CA032DE2128400791797 /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D60C9FE2DE210CF00791797 /* SharedStorage.swift */; };
 		2DB438CC2DE107CB003AE675 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB438CB2DE107CB003AE675 /* WidgetKit.framework */; };
 		2DB438CE2DE107CB003AE675 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB438CD2DE107CB003AE675 /* SwiftUI.framework */; };
 		2DB438DF2DE107CC003AE675 /* TaskifyWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2DB438C92DE107CB003AE675 /* TaskifyWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -53,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2D60C9FE2DE210CF00791797 /* SharedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStorage.swift; sourceTree = "<group>"; };
 		2D7BB7642DC2BAF000840843 /* Taskify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Taskify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7BB7712DC2BAF100840843 /* TaskifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7BB77B2DC2BAF100840843 /* TaskifyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskifyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,9 +137,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2D60CA012DE2119A00791797 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				2D60CA022DE211BD00791797 /* Storage */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		2D60CA022DE211BD00791797 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				2D60C9FE2DE210CF00791797 /* SharedStorage.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		2D7BB75B2DC2BAF000840843 = {
 			isa = PBXGroup;
 			children = (
+				2D60CA012DE2119A00791797 /* Shared */,
 				2DB438E62DE10830003AE675 /* TaskifyWidgetExtension.entitlements */,
 				2D7BB7662DC2BAF000840843 /* Taskify */,
 				2D7BB7742DC2BAF100840843 /* TaskifyTests */,
@@ -352,6 +372,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D60C9FF2DE210D700791797 /* SharedStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D60CA032DE2128400791797 /* SharedStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
