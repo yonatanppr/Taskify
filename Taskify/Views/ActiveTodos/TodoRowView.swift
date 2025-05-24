@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreHaptics
 
 struct TodoRowView: View {
     var todo: TodoItem
@@ -15,8 +16,11 @@ struct TodoRowView: View {
             HStack(alignment: .center, spacing: 0) {
                 // --- Toggle Button ---
                 Button(action: {
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                    generator.impactOccurred()
+                    if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.prepare()
+                        generator.impactOccurred()
+                    }
                     onToggle()
                 }) {
                     Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")

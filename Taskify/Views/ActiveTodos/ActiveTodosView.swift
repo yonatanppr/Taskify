@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import CoreHaptics
 
 struct ActiveTodosView: View {
     @Binding var todos: [TodoItem]
@@ -133,8 +134,11 @@ struct ActiveTodosView: View {
             reminderManager: reminderManager
         ) {
             newTodoText = ""
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.impactOccurred()
+            if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.prepare()
+                generator.impactOccurred()
+            }
         }
     }
     // MARK: - Extracted Subviews
