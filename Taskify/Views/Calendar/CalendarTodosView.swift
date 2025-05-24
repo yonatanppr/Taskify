@@ -12,10 +12,8 @@ struct CalendarTodosView: View {
         let matched = todos.filter {
             let todoDay = Calendar.current.startOfDay(for: $0.reminderDate ?? .distantPast)
             let isMatch = todoDay == selectedDay
-           // print("🔍 \(String(describing: $0.title)) → \(String(describing: $0.reminderDate)) | Matched: \(isMatch)")
             return isMatch
         }
-      //  print("📅 Selected Day: \(selectedDay), Matches Found: \(matched.count)")
         return matched
     }
 
@@ -46,6 +44,11 @@ struct CalendarTodosView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
+                //Text("Reminders for \(selectedDate, style: .date)")
+               //     .font(.system(size: 26, weight: .bold))
+              //      .foregroundColor(Color("TextColor"))
+              //      .padding(.bottom)
+                
                 VStack(spacing: 12) {
                     HStack {
                         Button(action: {
@@ -60,9 +63,8 @@ struct CalendarTodosView: View {
 
                         Spacer()
 
-                        Text("\(calendarController.yearMonth.monthLongString), \(String(calendarController.yearMonth.year))")
-                            .font(.title3)
-                            .fontWeight(.semibold)
+                        Text("\(calendarController.yearMonth.monthLongString) \(String(calendarController.yearMonth.year))")
+                            .font(.system(size: 25, weight: .bold))
                             .foregroundColor(Color("TextColor"))
 
                         Spacer()
@@ -88,11 +90,11 @@ struct CalendarTodosView: View {
 
                                     if isSelected {
                                         Circle()
+                                            .fill(Color("SelectedCalendarDay"))
                                             .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.8)
-                                            .background(Color.destructiveRed)
                                     } else if isToday {
                                         Circle()
-                                            .stroke(Color.destructiveRed, lineWidth: 1.5)
+                                            .stroke(Color("SelectedCalendarDay"), lineWidth: 1.5)
                                             .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.8)
                                     }
 
@@ -105,7 +107,7 @@ struct CalendarTodosView: View {
                                         VStack {
                                             Spacer()
                                             Circle()
-                                                .fill(isSelected ? Color("TextColor") : Color.destructiveRed)
+                                                .fill(isSelected ? Color("TextColor") : Color("SelectedCalendarDay"))
                                                 .frame(width: 6, height: 6)
                                                 .padding(.bottom, 4)
                                         }
@@ -125,15 +127,10 @@ struct CalendarTodosView: View {
                     .padding(.horizontal)
                 }
                 .padding(.top)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .background(Color("CalendarColor"), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .padding(.horizontal)
 
                 VStack(spacing: 16) {
-                    Text("Reminders for \(selectedDate, style: .date)")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color("TextColor"))
-                        .padding(.top)
 
                     if todosForSelectedDate.isEmpty {
                         VStack {

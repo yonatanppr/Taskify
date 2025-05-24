@@ -50,6 +50,14 @@ struct SettingsView: View {
                     FilterSelectionList(selectedFilters: $selectedFilters)
                     Text("Pick up to 3 filters. Drag to reorder. Tap to remove/add.").font(.headline).foregroundColor(.secondary)
                 }
+                Section(header: Text("Appearance")) {
+                    Picker("Appearance", selection: $theme) {
+                        Text("System").tag("System")
+                        Text("Light").tag("Light")
+                        Text("Dark").tag("Dark")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                }
             }
             .navigationTitle("Settings")
             .toolbar {
