@@ -1,4 +1,5 @@
 import Foundation
+import WidgetKit
 
 struct TodoStorage {
     private static let key = "saved_todos"
@@ -13,6 +14,7 @@ struct TodoStorage {
         encoder.dateEncodingStrategy = .iso8601
         if let encoded = try? encoder.encode(todos) {
             userDefaults?.set(encoded, forKey: key)
+            WidgetCenter.shared.reloadTimelines(ofKind: "TaskifyWidget")
         }
         if let data = TodoStorage.userDefaults?.data(forKey: "saved_todos") {
             print("Saved data size: \(data.count)")
