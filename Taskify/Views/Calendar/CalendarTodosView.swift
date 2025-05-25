@@ -127,7 +127,7 @@ struct CalendarTodosView: View {
                     .padding(.horizontal)
                 }
                 .padding(.top)
-                .background(Color("CalendarColor"), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .background(Color("CalendarBackground"), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .padding(.horizontal)
 
                 VStack(spacing: 16) {

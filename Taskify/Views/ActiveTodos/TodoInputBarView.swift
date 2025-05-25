@@ -49,13 +49,13 @@ struct TodoInputBarView: View {
                 }) {
                     ZStack {
                         Circle()
-                            .fill(Color("SubmitButtonColor"))
+                            .fill(Color("SubmitButton"))
                             .frame(width: 55, height: 55)
                         Image(systemName: "plus")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 25, height: 25)
-                            .foregroundColor(Color("TextColor"))
+                            .foregroundColor(Color("PlusIcon"))
                     }
                 }
                 .padding(.trailing, 16)

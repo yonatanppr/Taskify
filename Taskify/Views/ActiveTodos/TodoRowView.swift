@@ -11,7 +11,7 @@ struct TodoRowView: View {
     var onQuickTicToggle: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 0) {
             // Main row: toggle, title, quick tic, bell
             HStack(alignment: .center, spacing: 0) {
                 // --- Toggle Button ---
@@ -25,7 +25,7 @@ struct TodoRowView: View {
                 }) {
                     Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundColor(todo.isDone ? .positiveGreen : Color("TextColor"))
+                        .foregroundColor(todo.isDone ? .positiveGreen : Color("TodoText"))
                         .frame(width: 44, height: 44, alignment: .center)
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -33,7 +33,7 @@ struct TodoRowView: View {
 
                 Text(todo.title)
                     .font(.system(size: 19, weight: .regular, design: .rounded))
-                    .foregroundColor(todo.isDone ? .secondaryText : Color("TextColor"))
+                    .foregroundColor(todo.isDone ? .secondaryText : Color("TodoText"))
                     .strikethrough(todo.isDone, color: .secondaryText)
                     .padding(.leading, 12)
                     .padding(.vertical, 12)
@@ -44,7 +44,7 @@ struct TodoRowView: View {
                 }) {
                     Image(systemName: "bolt.fill")
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundColor(todo.isQuickTic ? Color("SelectedAttributeColor") : Color("QuickTicBoltUnselected"))
+                        .foregroundColor(todo.isQuickTic ? Color("SelectedTodoAttribute") : Color("UnselectedTodoAttribute"))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .cornerRadius(10)
@@ -63,9 +63,9 @@ struct TodoRowView: View {
                         .font(.system(size: 18, weight: .medium))
                         .foregroundColor({
                             if let date = todo.reminderDate {
-                                return date < Date() ? .destructiveRed : Color("SelectedAttributeColor")
+                                return date < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute")
                             } else {
-                                return Color("TextColor")
+                                return Color("UnselectedTodoAttribute")
                             }
                         }())
                         .frame(width: 44, height: 44, alignment: .center)
@@ -79,7 +79,7 @@ struct TodoRowView: View {
                     Spacer()
                     Text(formattedReminder(reminder))
                         .font(.system(size: 13, weight: .medium, design: .rounded))
-                        .foregroundColor(reminder < Date() ? .destructiveRed : Color("SelectedAttributeColor"))
+                        .foregroundColor(reminder < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute"))
                         .padding(.trailing, 12)
                         .allowsHitTesting(false)
                 }
@@ -88,7 +88,7 @@ struct TodoRowView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 4)
         .background(
-            Color("TodoColor"), in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            Color("TodoCard"), in: RoundedRectangle(cornerRadius: 20, style: .continuous)
         )
         .padding(.horizontal, 8)
         .id(todo.id)

@@ -37,27 +37,11 @@ struct DraggableInputCardView: View {
                     Capsule()
                         .fill(Color.gray.opacity(0.5))
                         .frame(width: 40, height: 5)
-                        .padding(.top, 15)
+                        .padding(.top, 30)
                         .padding(.bottom, 10)
 
                     HStack(alignment: .center, spacing: 8) {
                         TodoInputBarView(newTodoText: $newTodoText, onSubmit: onSubmit, isInputActive: $inputFieldIsFocused)
-                        /*
-                        Button(action: {
-                            onSubmit()
-                            inputFieldIsFocused = true
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.white)
-                                    .frame(width: 55, height: 55)
-                                Image(systemName: "plus")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25, height: 25)
-                                    .foregroundColor(.accentGray)
-                            }
-                        }*/
                     }
                     .padding(.horizontal)
 
@@ -95,7 +79,7 @@ struct DraggableInputCardView: View {
                 ZStack {
                 //    Color.clear
                       //  .background(.ultraThinMaterial)
-                    Color("DraggableCardColor")
+                    Color("DraggableCard")
                 }
             )
             .cornerRadius(cardCornerRadius, corners: [.topLeft, .topRight])

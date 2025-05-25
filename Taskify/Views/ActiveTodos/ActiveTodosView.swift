@@ -149,12 +149,12 @@ struct ActiveTodosView: View {
                 Image(systemName: "person.circle")
                     .font(.system(size: 22, weight: .thin))
                     .padding(12)
-                    .foregroundColor(Color("TextColor"))
+                    .foregroundColor(Color("ButtonIcon"))
                     .background(
                         ZStack {
                             Color.clear
                                 .background(.ultraThinMaterial)
-                            Color("StandardButtonColor")
+                            Color("UnselectedFilter")
                         }
                     )
                     .clipShape(Circle())
@@ -164,12 +164,12 @@ struct ActiveTodosView: View {
                 Image(systemName: "gearshape")
                     .font(.system(size: 22, weight: .thin))
                     .padding(12)
-                    .foregroundColor(Color("TextColor"))
+                    .foregroundColor(Color("ButtonIcon"))
                     .background(
                         ZStack {
                             Color.clear
                                 .background(.ultraThinMaterial)
-                            Color("StandardButtonColor")
+                            Color("UnselectedFilter")
                         }
                     )
                     .clipShape(Circle())
@@ -178,8 +178,8 @@ struct ActiveTodosView: View {
             Spacer()
             
             Text(currentDateText)
-                .font(.system(size: 53, weight: .bold, design: .rounded))
-                .foregroundColor(Color("TextColor"))
+                .font(.system(size: 65, weight: .bold, design: .rounded))
+                .foregroundColor(Color("DateColor"))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .truncationMode(.tail)
@@ -203,26 +203,26 @@ struct ActiveTodosView: View {
                 }) {
                     ZStack {
                         if taskFilter == filter {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color("SelectedButtonColor"))
+                            RoundedRectangle(cornerRadius: 22)
+                                .fill(Color("SelectedFilter"))
                                 .matchedGeometryEffect(id: "filterBackground", in: filterAnimation)
                                 .allowsHitTesting(false)
                         }
                         
                         Text(filter.rawValue)
-                            .font(.footnote)
+                            .font(.callout)
                             .fontWeight(.medium)
-                            .foregroundColor(Color("TextColor"))
+                            .foregroundColor(Color("FilterText"))
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 32)
+                    .frame(height: 38)
                 }
                 .contentShape(Rectangle())
                 .buttonStyle(PlainButtonStyle())
             }
         }
         .id(selectedFilters.map { $0.rawValue }.joined(separator: "-")) // Stronger ID to force update
-        .background(Color("StandardButtonColor"), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color("UnselectedFilter"), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .padding(.horizontal, 20)
     }
     

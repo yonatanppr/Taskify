@@ -39,7 +39,7 @@ struct ContentView: View {
                 }
             }
             .background(
-                Color("BackgroundColor")
+                Color("AppBackground")
             )
         }
         .onAppear {
