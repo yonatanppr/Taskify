@@ -24,29 +24,29 @@ struct TodoRowView: View {
                     onToggle()
                 }) {
                     Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.system(size: 14, weight: .medium))
                         .foregroundColor(todo.isDone ? .positiveGreen : Color("TodoText"))
-                        .frame(width: 44, height: 44, alignment: .center)
+                        .frame(width: 36, height: 36, alignment: .center)
                 }
                 .buttonStyle(PlainButtonStyle())
                 .contentShape(Rectangle())
 
                 Text(todo.title)
-                    .font(.system(size: 19, weight: .regular, design: .rounded))
+                    .font(.system(size: 17, weight: .regular, design: .rounded))
                     .foregroundColor(todo.isDone ? .secondaryText : Color("TodoText"))
                     .strikethrough(todo.isDone, color: .secondaryText)
                     .padding(.leading, 12)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 8)
                     .allowsHitTesting(false)
 
                 Button(action: {
                     onQuickTicToggle()
                 }) {
                     Image(systemName: "bolt.fill")
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(todo.isQuickTic ? Color("SelectedTodoAttribute") : Color("UnselectedTodoAttribute"))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
                         .cornerRadius(10)
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -60,7 +60,7 @@ struct TodoRowView: View {
                     onBellTap()
                 }) {
                     Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
-                        .font(.system(size: 18, weight: .medium))
+                        .font(.system(size: 15, weight: .medium))
                         .foregroundColor({
                             if let date = todo.reminderDate {
                                 return date < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute")
@@ -68,7 +68,7 @@ struct TodoRowView: View {
                                 return Color("UnselectedTodoAttribute")
                             }
                         }())
-                        .frame(width: 44, height: 44, alignment: .center)
+                        .frame(width: 36, height: 36, alignment: .center)
                 }
                 .buttonStyle(PlainButtonStyle())
                 .contentShape(Rectangle())
@@ -78,7 +78,7 @@ struct TodoRowView: View {
                 HStack {
                     Spacer()
                     Text(formattedReminder(reminder))
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundColor(reminder < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute"))
                         .padding(.trailing, 12)
                         .allowsHitTesting(false)
@@ -86,9 +86,9 @@ struct TodoRowView: View {
             }
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
         .background(
-            Color("TodoCard"), in: RoundedRectangle(cornerRadius: 25, style: .continuous)
+            Color("TodoCard"), in: RoundedRectangle(cornerRadius: 18, style: .continuous)
         )
         .padding(.horizontal, 8)
         .id(todo.id)
