@@ -15,11 +15,6 @@ struct FilterOption: Identifiable, Codable, Equatable {
 
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
-    @AppStorage("defaultReminderHour") private var defaultReminderHour: Int = 9
-    @AppStorage("muteReminders") private var muteReminders: Bool = false
-    @AppStorage("startWeekOnMonday") private var startWeekOnMonday: Bool = true
-    @AppStorage("aiPromptTone") private var aiPromptTone: String = "Minimal"
-    @AppStorage("autoGenerateTasks") private var autoGenerateTasks: Bool = true
     @AppStorage("theme") private var theme: String = "System"
     @AppStorage("selectedFilters") private var selectedFiltersRaw: String = "[]"
 
@@ -59,6 +54,8 @@ struct SettingsView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
             }
+            .scrollContentBackground(.hidden) // iOS 16+: hide default Form background
+            .background(Color("SettingsBackground")) // set custom background color
             .navigationTitle("Settings")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
