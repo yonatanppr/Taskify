@@ -107,7 +107,7 @@ struct CalendarTodosView: View {
                                         VStack {
                                             Spacer()
                                             Circle()
-                                                .fill(isSelected ? Color("TextColor") : Color("SelectedCalendarDay"))
+                                                .fill(isSelected ? Color("TextColor") : Color("ReminderAccent"))
                                                 .frame(width: 6, height: 6)
                                                 .padding(.bottom, 4)
                                         }

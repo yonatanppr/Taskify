@@ -35,7 +35,7 @@ struct DraggableInputCardView: View {
                 // --- Fixed Top Section (Non-Scrolling) ---
                 VStack(spacing: 8) {
                     Capsule()
-                        .fill(Color.gray.opacity(0.5))
+                        .fill(Color("InputBarLine"))
                         .frame(width: 40, height: 5)
                         .padding(.top, 30)
                         .padding(.bottom, 10)
@@ -77,9 +77,8 @@ struct DraggableInputCardView: View {
             .frame(maxHeight: .infinity)
             .background(
                 ZStack {
-                //    Color.clear
-                      //  .background(.ultraThinMaterial)
                     Color("DraggableCard")
+                    .background(.ultraThinMaterial)
                 }
             )
             .cornerRadius(cardCornerRadius, corners: [.topLeft, .topRight])
