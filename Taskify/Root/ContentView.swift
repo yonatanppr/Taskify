@@ -19,15 +19,6 @@ struct ContentView: View {
                         .zIndex(0)
 
                         if let index = viewModel.showingDatePickerForIndex {
-                            ReminderOverlayView(
-                                index: index,
-                                todos: $viewModel.todos,
-                                reminderDate: $viewModel.reminderDate,
-                                showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
-                                reminderManager: ReminderService()
-                            )
-                            .transition(.scale(scale: 0.95).combined(with: .opacity))
-                            .zIndex(1000)
                         }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)

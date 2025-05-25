@@ -66,16 +66,6 @@ struct ActiveTodosView: View {
             }
             .background(Color.clear)
             .ignoresSafeArea(.keyboard, edges: .bottom)
-            
-            if let index = showingDatePickerForIndex {
-                ReminderOverlayView(
-                    index: index,
-                    todos: $todos,
-                    reminderDate: $reminderDate,
-                    showingDatePickerForIndex: $showingDatePickerForIndex,
-                    reminderManager: reminderManager
-                )
-            }
         }
         .sheet(isPresented: $showingSettings, onDismiss: {
             updateTaskFilterIfNeeded()
