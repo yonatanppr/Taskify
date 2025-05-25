@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreHaptics
 
 struct TodoGenerationHandler {
     static func handleNewTodoSubmission(
@@ -34,6 +35,11 @@ struct TodoGenerationHandler {
             }
             isLoading.wrappedValue = false
             onComplete()
+            if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.prepare()
+                generator.impactOccurred()
+            }
         }
     }
 }
