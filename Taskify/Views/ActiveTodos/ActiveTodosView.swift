@@ -118,7 +118,6 @@ struct ActiveTodosView: View {
                 taskFilter: $taskFilter,
                 filterAnimation: filterAnimation
             )
-            loadingIndicator
             todoSection
         }
         .padding(.horizontal, 16)
@@ -165,16 +164,4 @@ struct ActiveTodosView: View {
                                 removal: .opacity))
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: taskFilter)
     }
-    
-    private var loadingIndicator: some View {
-        Group {
-            if isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .accentGray))
-                    .scaleEffect(1.4)
-                    .transition(.scale.animation(.spring(response: 0.3, dampingFraction: 0.6)))
-            }
-        }
-    }
-    
 }
