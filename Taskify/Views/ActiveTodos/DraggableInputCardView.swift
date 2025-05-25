@@ -13,8 +13,8 @@ struct DraggableInputCardView: View {
     @State private var gestureOffset: CGFloat = 0
     @FocusState private var inputFieldIsFocused: Bool
     
-    private let topSectionFixedSHeight: CGFloat = 120
-    private let cardCornerRadius: CGFloat = 25
+    private let topSectionFixedSHeight: CGFloat = 100
+    private let cardCornerRadius: CGFloat = 30
 
     private var shouldShowCalendarContent: Bool {
         // Only show calendar if explicitly pulled up and keyboard is not active.
@@ -158,7 +158,7 @@ struct DraggableInputCardView: View {
 
         if inputFieldIsFocused && keyboardHeight > 0 {
             // Calculate the desired top Y coordinate of the card in global space
-            let desiredGlobalCardTopY = UIScreen.main.bounds.height - keyboardHeight - topSectionFixedSHeight
+            let desiredGlobalCardTopY = UIScreen.main.bounds.height - keyboardHeight - topSectionFixedSHeight - 20
             
             // Convert this global Y to an offset within our GeometryReader's coordinate space
             let geometryGlobalMinY = geometry.frame(in: .global).minY

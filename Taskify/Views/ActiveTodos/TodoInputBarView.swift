@@ -9,12 +9,12 @@ struct TodoInputBarView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.accentGray, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 30)
+                .stroke(Color("InputBarLine"), lineWidth: 2)
             HStack {
                 TextField("", text: $newTodoText)
                     .disableAutocorrection(false)
-                    .font(.system(size: 35, weight: .bold))
+                    .font(.system(size: 24, weight: .bold))
                     .foregroundColor(Color("TextColor"))
                     .accentColor(.accentGray)
                     .padding(.leading, 16)
@@ -30,7 +30,7 @@ struct TodoInputBarView: View {
                             ? VStack(alignment: .leading) {
                                 Text(placeholderText)
                                     .foregroundColor(Color("TextColor"))
-                                    .font(.system(size: 35, weight: .bold))
+                                    .font(.system(size: 21, weight: .bold))
                                     .lineLimit(nil)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .padding(.leading, 16)
@@ -50,21 +50,21 @@ struct TodoInputBarView: View {
                     ZStack {
                         Circle()
                             .fill(Color("SubmitButton"))
-                            .frame(width: 55, height: 55)
+                            .frame(width: 45, height: 45)
                         Image(systemName: "plus")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 25, height: 25)
+                            .frame(width: 18, height: 18)
                             .foregroundColor(Color("PlusIcon"))
                     }
                 }
-                .padding(.trailing, 16)
+                .padding(.trailing, 0)
                 
             }
             .padding(8)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
+        .padding(.top, 4).padding(.bottom, 8)
         .background(Color.clear)
     }
 }

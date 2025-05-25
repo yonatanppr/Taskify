@@ -146,14 +146,15 @@ struct ActiveTodosView: View {
     private var headerBar: some View {
         HStack(spacing: 12) {
             Button(action: {}) {
-                Image(systemName: "person.circle")
-                    .font(.system(size: 22, weight: .thin))
+                Image("ProfileIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
                     .padding(12)
-                    .foregroundColor(Color("ButtonIcon"))
+                    .foregroundColor(Color("ButtonIcon"))  // Optional
                     .background(
                         ZStack {
-                            Color.clear
-                                .background(.ultraThinMaterial)
+                            Color.clear.background(.ultraThinMaterial)
                             Color("UnselectedFilter")
                         }
                     )
@@ -161,14 +162,15 @@ struct ActiveTodosView: View {
             }
             
             Button(action: { showingSettings = true }) {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 22, weight: .thin))
+                Image("SettingsIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
                     .padding(12)
-                    .foregroundColor(Color("ButtonIcon"))
+                    .foregroundColor(Color("ButtonIcon"))  // Optional
                     .background(
                         ZStack {
-                            Color.clear
-                                .background(.ultraThinMaterial)
+                            Color.clear.background(.ultraThinMaterial)
                             Color("UnselectedFilter")
                         }
                     )
