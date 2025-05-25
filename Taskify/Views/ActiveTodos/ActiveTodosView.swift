@@ -49,20 +49,7 @@ struct ActiveTodosView: View {
             GeometryReader { geometryOfActiveTodosView in
                 Group {
                     ZStack(alignment: .bottom) {
-                        VStack(spacing: 24) {
-                            headerBar
-                            FilterBarView(
-                                selectedFilters: .constant(selectedFilters),
-                                taskFilter: $taskFilter,
-                                filterAnimation: filterAnimation
-                            )
-                            loadingIndicator
-                            todoSection
-                        }
-                        .padding(.horizontal, 16)
-                        .frame(maxWidth: .infinity)
-                        .zIndex(0)
-                        
+                        mainContent
                         
                         DraggableInputCardView(
                             newTodoText: $newTodoText,
@@ -120,6 +107,25 @@ struct ActiveTodosView: View {
         }
     }
     
+    private var mainContent: some View {
+        VStack(spacing: 24) {
+            HeaderBarView(
+                showingSettings: $showingSettings,
+                currentDateText: currentDateText
+            )
+            FilterBarView(
+                selectedFilters: .constant(selectedFilters),
+                taskFilter: $taskFilter,
+                filterAnimation: filterAnimation
+            )
+            loadingIndicator
+            todoSection
+        }
+        .padding(.horizontal, 16)
+        .frame(maxWidth: .infinity)
+        .zIndex(0)
+    }
+    
     private func updateTaskFilterIfNeeded() {
         if !selectedFilters.contains(taskFilter) {
             taskFilter = selectedFilters.first ?? .all
@@ -146,58 +152,6 @@ struct ActiveTodosView: View {
         }
     }
     // MARK: - Extracted Subviews
-    
-    private var headerBar: some View {
-        HStack(spacing: 12) {
-            Button(action: {}) {
-                Image("ProfileIcon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 24, height: 24)
-                    .padding(12)
-                    .foregroundColor(Color("ButtonIcon"))  // Optional
-                    .background(
-                        ZStack {
-                            Color.clear.background(.ultraThinMaterial)
-                            Color("UnselectedFilter")
-                        }
-                    )
-                    .clipShape(Circle())
-            }
-            
-            Button(action: { showingSettings = true }) {
-                Image("SettingsIcon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 24, height: 24)
-                    .padding(12)
-                    .foregroundColor(Color("ButtonIcon"))  // Optional
-                    .background(
-                        ZStack {
-                            Color.clear.background(.ultraThinMaterial)
-                            Color("UnselectedFilter")
-                        }
-                    )
-                    .clipShape(Circle())
-            }
-            
-            Spacer()
-            
-            Text(currentDateText)
-                .font(.system(size: 65, weight: .bold, design: .rounded))
-                .foregroundColor(Color("DateColor"))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .truncationMode(.tail)
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 35)
-        .onAppear {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd MMMM"
-            currentDateText = formatter.string(from: Date())
-        }
-    }
     
     private var todoSection: some View {
         ActiveTodoListSection(
