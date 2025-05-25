@@ -43,7 +43,7 @@ struct SettingsView: View {
             Form {
                 Section(header: Text("Todo List Filters")) {
                     FilterSelectionList(selectedFilters: $selectedFilters)
-                    Text("Pick up to 3 filters. Drag to reorder. Tap to remove/add.").font(.headline).foregroundColor(.secondary)
+                    Text("Pick up to 3 filters. Drag to reorder. Tap to remove/add.").font(.headline).foregroundColor(Color("TextColor"))
                 }
                 Section(header: Text("Appearance")) {
                     Picker("Appearance", selection: $theme) {
@@ -67,7 +67,7 @@ struct SettingsView: View {
                         }
                         print("[DEBUG] Done tapped. Final selectedFilters: \(selectedFilters.map { $0.label })")
                         dismiss()
-                    }.foregroundColor(.accentColor)
+                    }.foregroundColor(Color("SettingsButton"))
                 }
             }
         }

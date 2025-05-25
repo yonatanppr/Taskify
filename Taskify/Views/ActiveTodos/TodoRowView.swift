@@ -88,7 +88,7 @@ struct TodoRowView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 4)
         .background(
-            Color("TodoCard"), in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            Color("TodoCard"), in: RoundedRectangle(cornerRadius: 25, style: .continuous)
         )
         .padding(.horizontal, 8)
         .id(todo.id)
