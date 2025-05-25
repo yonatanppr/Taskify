@@ -8,7 +8,6 @@ struct ActiveTodosView: View {
     let reminderManager: ReminderManaging
     @Binding var showingDatePickerForIndex: Int?
     @Binding var reminderDate: Date
-    @Binding var showConfirmation: Bool
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
     @State private var showingSettings = false
@@ -60,18 +59,6 @@ struct ActiveTodosView: View {
                             todos: $todos
                         )
                         .zIndex(1)
-                        
-                        if showConfirmation {
-                            VStack {
-                                Spacer()
-                                ConfirmationToastView(message: "Reminder set!")
-                                    .padding(.bottom, collapsedCardVisibleHeight + 10 + keyboardResponder.currentHeight)
-                                    .transition(.move(edge: .bottom).animation(.spring(response: 0.4, dampingFraction: 0.7)))
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .zIndex(2)
-                            .allowsHitTesting(false)
-                        }
                     }
                     .animation(nil, value: showingDatePickerForIndex)
                 }
@@ -86,7 +73,6 @@ struct ActiveTodosView: View {
                     todos: $todos,
                     reminderDate: $reminderDate,
                     showingDatePickerForIndex: $showingDatePickerForIndex,
-                    showConfirmation: $showConfirmation,
                     reminderManager: reminderManager
                 )
             }
@@ -143,11 +129,6 @@ struct ActiveTodosView: View {
             reminderManager: reminderManager
         ) {
             newTodoText = ""
-            if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
-                let generator = UIImpactFeedbackGenerator(style: .light)
-                generator.prepare()
-                generator.impactOccurred()
-            }
         }
     }
     // MARK: - Extracted Subviews
@@ -157,7 +138,6 @@ struct ActiveTodosView: View {
             todos: $todos,
             taskFilter: taskFilter,
             reminderDate: $reminderDate,
-            showConfirmation: $showConfirmation,
             reminderManager: reminderManager
         )
         .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),

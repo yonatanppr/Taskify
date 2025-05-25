@@ -15,7 +15,6 @@ struct ContentView: View {
                             reminderManager: ReminderService(),
                             showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
                             reminderDate: $viewModel.reminderDate,
-                            showConfirmation: $viewModel.showConfirmation
                         )
                         .zIndex(0)
 
@@ -25,7 +24,6 @@ struct ContentView: View {
                                 todos: $viewModel.todos,
                                 reminderDate: $viewModel.reminderDate,
                                 showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
-                                showConfirmation: $viewModel.showConfirmation,
                                 reminderManager: ReminderService()
                             )
                             .transition(.scale(scale: 0.95).combined(with: .opacity))

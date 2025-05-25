@@ -6,7 +6,6 @@ struct ActiveTodoListSection: View {
     let taskFilter: ActiveTodosView.TaskFilter
     //@Binding var showingDatePickerForIndex: Int? // Removed for sheet-based picker
     @Binding var reminderDate: Date
-    @Binding var showConfirmation: Bool
     let reminderManager: ReminderManaging
 
     @State private var todoToDelete: TodoItem?

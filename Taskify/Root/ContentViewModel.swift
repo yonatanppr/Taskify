@@ -5,7 +5,6 @@ class ContentViewModel: ObservableObject {
     @Published var newTodoText: String = ""
     @Published var showingDatePickerForIndex: Int? = nil
     @Published var reminderDate: Date = Date()
-    @Published var showConfirmation: Bool = false
     @Published var isReady: Bool = false
     @Published var isShowingCalendarView: Bool = false
     @Published var showViewSelectionDialog: Bool = false

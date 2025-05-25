@@ -5,7 +5,6 @@ struct ReminderOverlayView: View {
     @Binding var todos: [TodoItem]
     @Binding var reminderDate: Date
     @Binding var showingDatePickerForIndex: Int?
-    @Binding var showConfirmation: Bool
     let reminderManager: ReminderManaging
 
     var body: some View {
@@ -18,16 +17,6 @@ struct ReminderOverlayView: View {
                     onDateSelected: { didCancel in
                         withAnimation(.easeInOut) {
                             showingDatePickerForIndex = nil
-                        }
-                        if !didCancel {
-                            withAnimation(.easeInOut) {
-                                showConfirmation = true
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation {
-                                    showConfirmation = false
-                                }
-                            }
                         }
                     },
                     onReminderUpdated: { updatedTodo in
