@@ -51,7 +51,11 @@ struct ActiveTodosView: View {
                     ZStack(alignment: .bottom) {
                         VStack(spacing: 24) {
                             headerBar
-                            filterBar
+                            FilterBarView(
+                                selectedFilters: .constant(selectedFilters),
+                                taskFilter: $taskFilter,
+                                filterAnimation: filterAnimation
+                            )
                             loadingIndicator
                             todoSection
                         }
@@ -193,39 +197,6 @@ struct ActiveTodosView: View {
             formatter.dateFormat = "dd MMMM"
             currentDateText = formatter.string(from: Date())
         }
-    }
-    
-    private var filterBar: some View {
-        HStack(spacing: 0) {
-            ForEach(selectedFilters, id: \.self) { filter in
-                Button(action: {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        taskFilter = filter
-                    }
-                }) {
-                    ZStack {
-                        if taskFilter == filter {
-                            RoundedRectangle(cornerRadius: 22)
-                                .fill(Color("SelectedFilter"))
-                                .matchedGeometryEffect(id: "filterBackground", in: filterAnimation)
-                                .allowsHitTesting(false)
-                        }
-                        
-                        Text(filter.rawValue)
-                            .font(.callout)
-                            .fontWeight(.medium)
-                            .foregroundColor(Color("FilterText"))
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 38)
-                }
-                .contentShape(Rectangle())
-                .buttonStyle(PlainButtonStyle())
-            }
-        }
-        .id(selectedFilters.map { $0.rawValue }.joined(separator: "-")) // Stronger ID to force update
-        .background(Color("UnselectedFilter"), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .padding(.horizontal, 20)
     }
     
     private var todoSection: some View {
