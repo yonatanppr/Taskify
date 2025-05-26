@@ -8,6 +8,11 @@ struct TaskifyApp: App {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(resolveColorScheme())
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        let _ = UIImpactFeedbackGenerator(style: .light)
+                    }
+                }
         }
     }
 

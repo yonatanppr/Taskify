@@ -9,6 +9,7 @@ struct ContentView: View {
             Group {
                 if viewModel.isReady {
                     ZStack {
+                        KeyboardPreloadView()
                         ActiveTodosView(
                             todos: $viewModel.todos,
                             newTodoText: $viewModel.newTodoText,
