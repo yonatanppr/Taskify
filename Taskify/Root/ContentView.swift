@@ -9,12 +9,6 @@ struct ContentView: View {
             Group {
                 if viewModel.isReady {
                     ZStack {
-                        Color.clear
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                viewModel.newTodoText = ""
-                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                            }
                         ZStack {
                             KeyboardPreloadView()
                             ActiveTodosView(
@@ -25,9 +19,6 @@ struct ContentView: View {
                                 reminderDate: $viewModel.reminderDate
                             )
                             .zIndex(0)
-                            if let index = viewModel.showingDatePickerForIndex {
-                                // your existing date picker logic
-                            }
                         }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)

@@ -11,6 +11,10 @@ struct ReminderService {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
             if granted {
                 DispatchQueue.main.async {
+                    if let oldID = todo.reminderID {
+                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [oldID])
+                        print("🗑️ Removed old reminder with ID \(oldID) for \(todo.title)")
+                    }
                     scheduleNotification(for: todo, at: date) { updatedTodo in
                         completion(updatedTodo)
                     }

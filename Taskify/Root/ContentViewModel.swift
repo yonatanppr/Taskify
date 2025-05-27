@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 class ContentViewModel: ObservableObject {
     @Published var todos: [TodoItem] = []
@@ -13,9 +14,12 @@ class ContentViewModel: ObservableObject {
     @MainActor
     func preloadApp() async {
         todos = SharedStorage.loadTodos()
-        let _ = UITextField() // Warm up UIKit text input system
-        withAnimation(.easeOut(duration: 0.3)) {
+        let _ = UITextField()
+        let _ = UITextView()
+        let _ = UISearchBar()
+        let _ = UIDatePicker()
+        withAnimation(.easeOut(duration: 0.1)) {
             isReady = true
-        }
+       }
     }
 }
