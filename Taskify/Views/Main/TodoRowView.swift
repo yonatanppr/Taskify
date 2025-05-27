@@ -9,6 +9,8 @@ struct TodoRowView: View {
     var onToggle: () -> Void
     var onBellTap: () -> Void
     var onQuickTicToggle: () -> Void
+    var namespace: Namespace.ID
+    var showFullUI: Bool = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -38,40 +40,67 @@ struct TodoRowView: View {
                     .padding(.leading, 12)
                     .padding(.vertical, 8)
                     .allowsHitTesting(false)
+                    .matchedGeometryEffect(id: "title-\(todo.id)", in: namespace)
 
-                Button(action: {
-                    onQuickTicToggle()
-                }) {
-                    Image(systemName: "bolt.fill")
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        .foregroundColor(todo.isQuickTic ? Color("SelectedTodoAttribute") : Color("UnselectedTodoAttribute"))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .cornerRadius(10)
+                if showFullUI {
+                    Button(action: {
+                        onQuickTicToggle()
+                    }) {
+                        Image(systemName: "bolt.fill")
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .foregroundColor(todo.isQuickTic ? Color("SelectedTodoAttribute") : Color("UnselectedTodoAttribute"))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .cornerRadius(10)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .padding(.leading, 6)
+                } else {
+                    Button(action: {}) {
+                        Image(systemName: "bolt.fill")
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .opacity(0)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .cornerRadius(10)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .padding(.leading, 6)
+                    .disabled(true)
                 }
-                .buttonStyle(PlainButtonStyle())
-                .padding(.leading, 6)
 
                 Spacer(minLength: 8)
                     .allowsHitTesting(false)
 
-                // --- Bell Button ---
-                Button(action: {
-                    onBellTap()
-                }) {
-                    Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundColor({
-                            if let date = todo.reminderDate {
-                                return date < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute")
-                            } else {
-                                return Color("UnselectedTodoAttribute")
-                            }
-                        }())
-                        .frame(width: 36, height: 36, alignment: .center)
+                if showFullUI {
+                    // --- Bell Button ---
+                    Button(action: {
+                        onBellTap()
+                    }) {
+                        Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor({
+                                if let date = todo.reminderDate {
+                                    return date < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute")
+                                } else {
+                                    return Color("UnselectedTodoAttribute")
+                                }
+                            }())
+                            .frame(width: 36, height: 36, alignment: .center)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .contentShape(Rectangle())
+                } else {
+                    Button(action: {}) {
+                        Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
+                            .font(.system(size: 15, weight: .medium))
+                            .opacity(0)
+                            .frame(width: 36, height: 36, alignment: .center)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .contentShape(Rectangle())
+                    .disabled(true)
                 }
-                .buttonStyle(PlainButtonStyle())
-                .contentShape(Rectangle())
             }
             // Second row: right-aligned reminder date (if any)
             if let reminder = todo.reminderDate {
@@ -90,6 +119,7 @@ struct TodoRowView: View {
         .background(
             Color("TodoCard"), in: RoundedRectangle(cornerRadius: 18, style: .continuous)
         )
+        .matchedGeometryEffect(id: "background-\(todo.id)", in: namespace)
         .padding(.horizontal, 8)
         .id(todo.id)
     }

@@ -42,46 +42,82 @@ struct ActiveTodosView: View {
     
     private let collapsedCardVisibleHeight: CGFloat = 140
     
+    @State private var selectedTodoForReminder: TodoItem? = nil
+    @State private var selectedTodoFrame: CGRect? = nil
     
-    var body: some View {
-        ZStack {
-            GeometryReader { geometryOfActiveTodosView in
-                Group {
-                    ZStack(alignment: .bottom) {
-                        mainContent
-                        
-                        DraggableInputCardView(
-                            newTodoText: $newTodoText,
-                            onSubmit: {
-                                Task { await handleNewTodoSubmission() }
-                            },
-                            errorMessage: $errorMessage,
-                            todos: $todos
-                        )
-                        .zIndex(1)
+var body: some View {
+    ZStack {
+        mainLayout
+    }
+    .sheet(isPresented: $showingSettings, onDismiss: {
+        updateTaskFilterIfNeeded()
+    }) {
+        SettingsView()
+    }
+    .onChange(of: selectedFiltersRaw) { _ in
+        updateTaskFilterIfNeeded()
+    }
+    .onChange(of: selectedFilters) { _ in
+        updateTaskFilterIfNeeded()
+    }
+    .onAppear {
+        updateTaskFilterIfNeeded()
+    }
+}
+
+private var mainLayout: some View {
+    GeometryReader { _ in
+        Group {
+            cardStack
+        }
+        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: keyboardResponder.currentHeight)
+    }
+    .background(Color.clear)
+    .ignoresSafeArea(.keyboard, edges: .bottom)
+}
+
+private var cardStack: some View {
+    ZStack(alignment: .bottom) {
+        mainContent
+
+        DraggableInputCardView(
+            newTodoText: $newTodoText,
+            onSubmit: {
+                Task { await handleNewTodoSubmission() }
+            },
+            errorMessage: $errorMessage,
+            todos: $todos
+        )
+        .zIndex(1)
+
+        if let todo = selectedTodoForReminder, let frame = selectedTodoFrame {
+            ReminderEditorCard(
+                todo: todo,
+                initialFrame: frame,
+                reminderManager: reminderManager,
+                onDismiss: {
+                    withAnimation {
+                        selectedTodoForReminder = nil
+                        selectedTodoFrame = nil
                     }
-                    .animation(nil, value: showingDatePickerForIndex)
-                }
-                .animation(.spring(response: 0.35, dampingFraction: 0.85, blendDuration: 0), value: keyboardResponder.currentHeight)
-            }
-            .background(Color.clear)
-            .ignoresSafeArea(.keyboard, edges: .bottom)
-        }
-        .sheet(isPresented: $showingSettings, onDismiss: {
-            updateTaskFilterIfNeeded()
-        }) {
-            SettingsView()
-        }
-        .onChange(of: selectedFiltersRaw) { newValue in
-            updateTaskFilterIfNeeded()
-        }
-        .onChange(of: selectedFilters) { newFilters in
-            updateTaskFilterIfNeeded()
-        }
-        .onAppear {
-            updateTaskFilterIfNeeded()
+                },
+                onSave: { updatedTodo in
+                    if let index = todos.firstIndex(where: { $0.id == updatedTodo.id }) {
+                        todos[index] = updatedTodo
+                    }
+                    withAnimation {
+                        selectedTodoForReminder = nil
+                        selectedTodoFrame = nil
+                    }
+                },
+                namespace: filterAnimation
+            )
+            .transition(.identity)
+            .zIndex(10)
         }
     }
+    .animation(nil, value: showingDatePickerForIndex)
+}
     
     private var mainContent: some View {
         VStack(spacing: 24) {
@@ -128,7 +164,9 @@ struct ActiveTodosView: View {
             todos: $todos,
             taskFilter: taskFilter,
             reminderDate: $reminderDate,
-            reminderManager: reminderManager
+            reminderManager: reminderManager,
+            selectedTodoForReminder: $selectedTodoForReminder,
+            selectedTodoFrame: $selectedTodoFrame
         )
         .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),
                                 removal: .opacity))

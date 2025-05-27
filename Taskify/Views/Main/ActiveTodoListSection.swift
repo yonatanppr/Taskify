@@ -9,7 +9,9 @@ struct ActiveTodoListSection: View {
     let reminderManager: ReminderManaging
 
     @State private var todoToDelete: TodoItem?
-    @State private var selectedTodoForReminder: TodoItem?
+    @Binding var selectedTodoForReminder: TodoItem?
+    @Namespace private var reminderTransitionNamespace
+    @Binding var selectedTodoFrame: CGRect?
 
     private var filteredTodos: [Binding<TodoItem>] {
         switch taskFilter {
@@ -59,24 +61,30 @@ struct ActiveTodoListSection: View {
             }
         }
 
-        return TodoRowView(
-            todo: todoBinding.wrappedValue,
-            reminderDate: $reminderDate,
-            onToggle: onToggle,
-            onBellTap: {
-                selectedTodoForReminder = todoBinding.wrappedValue
-                if let date = todoBinding.reminderDate.wrappedValue {
-                    reminderDate = date
-                } else {
-                    reminderDate = Date()
-                }
-            },
-            onQuickTicToggle: {
-                if let index = todos.firstIndex(where: { $0.id == todoBinding.id }) {
-                    todos[index].isQuickTic.toggle()
-                }
-            }
-        )
+        return GeometryReader { geometry in
+            TodoRowView(
+                todo: todoBinding.wrappedValue,
+                reminderDate: $reminderDate,
+                onToggle: onToggle,
+                onBellTap: {
+                    selectedTodoForReminder = todoBinding.wrappedValue
+                    if let date = todoBinding.reminderDate.wrappedValue {
+                        reminderDate = date
+                    } else {
+                        reminderDate = Date()
+                    }
+                    selectedTodoFrame = geometry.frame(in: .global)
+                },
+                onQuickTicToggle: {
+                    if let index = todos.firstIndex(where: { $0.id == todoBinding.id }) {
+                        todos[index].isQuickTic.toggle()
+                    }
+                },
+                namespace: reminderTransitionNamespace
+            )
+            .background(GeometryPreferenceSetter())
+        }
+        .frame(height: 60) // or appropriate height for TodoRowView
         .listRowInsets(EdgeInsets())
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)
@@ -91,6 +99,11 @@ struct ActiveTodoListSection: View {
         .cornerRadius(12)
         .padding(.horizontal)
         .padding(.vertical, 6)
+        .onPreferenceChange(GeometryPreferenceKey.self) { value in
+            if selectedTodoForReminder?.id == todoBinding.wrappedValue.id {
+                selectedTodoFrame = value
+            }
+        }
     }
 
     var body: some View {
@@ -117,14 +130,20 @@ struct ActiveTodoListSection: View {
                 secondaryButton: .cancel()
             )
         }
-        .sheet(item: $selectedTodoForReminder) { todo in
-            ReminderSheetView(
-                reminderDate: $reminderDate,
-                isPresented: Binding(get: { selectedTodoForReminder != nil }, set: { if !$0 { selectedTodoForReminder = nil } }),
-                todos: $todos,
-                todo: todo,
-                reminderManager: reminderManager
-            )
+    }
+}
+
+private struct GeometryPreferenceKey: PreferenceKey {
+    static var defaultValue: CGRect = .zero
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+        value = nextValue()
+    }
+}
+
+private struct GeometryPreferenceSetter: View {
+    var body: some View {
+        GeometryReader { geometry in
+            Color.clear.preference(key: GeometryPreferenceKey.self, value: geometry.frame(in: .global))
         }
     }
 }
