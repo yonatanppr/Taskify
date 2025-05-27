@@ -17,7 +17,10 @@ final class KeyboardResponder: ObservableObject {
 
 
         cancellable = Publishers.Merge(keyboardWillShow, keyboardWillHide)
-            .subscribe(on: DispatchQueue.main) // Ensure operations are on the main thread
+            .subscribe(on: DispatchQueue.main)
+            .handleEvents(receiveOutput: { height in
+                print("🔺 Keyboard height updated: \(height)")
+            })
             .assign(to: \.currentHeight, on: self)
     }
 }

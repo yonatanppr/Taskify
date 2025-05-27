@@ -31,118 +31,126 @@ struct DraggableInputCardView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // --- Fixed Top Section (Non-Scrolling) ---
-                VStack(spacing: 8) {
-                    Capsule()
-                        .fill(Color("InputBarLine"))
-                        .frame(width: 40, height: 5)
-                        .padding(.top, 30)
-                        .padding(.bottom, 10)
+            ZStack {
+                VStack(spacing: 0) {
+                    // --- Fixed Top Section (Non-Scrolling) ---
+                    VStack(spacing: 8) {
+                        Capsule()
+                            .fill(Color("InputBarLine"))
+                            .frame(width: 40, height: 5)
+                            .padding(.top, 30)
+                            .padding(.bottom, 10)
 
-                    HStack(alignment: .center, spacing: 8) {
-                        TodoInputBarView(newTodoText: $newTodoText, onSubmit: onSubmit, isInputActive: $inputFieldIsFocused)
-                    }
-                    .padding(.horizontal)
-
-                    if let message = errorMessage {
-                        Text(message)
-                            .font(.caption)
-                            .foregroundColor(Color("TextColor"))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.destructiveRed.opacity(0.9))
-                            .clipShape(Capsule())
-                            .transition(.scale(scale: 0.9, anchor: .top).animation(.spring(response: 0.3, dampingFraction: 0.6)))
-                            .padding(.horizontal)
-                            .padding(.bottom, 8)
-                    }
-                    Spacer()
-                }
-                .frame(height: topSectionFixedSHeight)
-                .background(Color.clear)
-
-                // --- Scrollable Bottom Section (Calendar) ---
-                if shouldShowCalendarContent {
-                    ScrollView(showsIndicators: false) {
-                        CalendarTodosView(todos: $todos)
-                            .padding(.top, 35)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                } else {
-                    Spacer()
-                }
-            }
-            .frame(width: geometry.size.width)
-            .frame(maxHeight: .infinity)
-            .background(
-                ZStack {
-                    Color("DraggableCard")
-                    .background(.ultraThinMaterial)
-                }
-            )
-            .cornerRadius(cardCornerRadius, corners: [.topLeft, .topRight])
-            .clipped()
-            .offset(y: calculateOffset(geometry: geometry, keyboardHeight: keyboardResponder.currentHeight) + (isDragging ? gestureOffset : 0))
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        if inputFieldIsFocused {
-                            inputFieldIsFocused = false // Dismiss keyboard immediately on drag
+                        HStack(alignment: .center, spacing: 8) {
+                            TodoInputBarView(newTodoText: $newTodoText, onSubmit: onSubmit, isInputActive: $inputFieldIsFocused)
                         }
-                        isDragging = true
-                        gestureOffset = value.translation.height
-                    }
-                    .onEnded { value in
-                        isDragging = false
-                        gestureOffset = 0
+                        .padding(.horizontal)
 
-                        if inputFieldIsFocused {
-                            withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 0.8)) {
-                                self.dragOffset = geometry.size.height - topSectionFixedSHeight
-                            }
-                            return
+                        if let message = errorMessage {
+                            Text(message)
+                                .font(.caption)
+                                .foregroundColor(Color("TextColor"))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color.destructiveRed.opacity(0.9))
+                                .clipShape(Capsule())
+                                .transition(.scale(scale: 0.9, anchor: .top).animation(.spring(response: 0.3, dampingFraction: 0.6)))
+                                .padding(.horizontal)
+                                .padding(.bottom, 8)
                         }
-
-                        let predictedEndOffset = value.predictedEndTranslation.height + dragOffset
-                        if predictedEndOffset < (geometry.size.height - topSectionFixedSHeight) * 0.6 {
-                            self.dragOffset = 0 // Snap Up
-                        } else {
-                            self.dragOffset = geometry.size.height - topSectionFixedSHeight // Snap Down
-                        }
+                        Spacer()
                     }
-            )
-            .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.75, blendDuration: 0.2), value: dragOffset)
-            .ignoresSafeArea(edges: .bottom)
-            .onAppear {
-                self.dragOffset = geometry.size.height - topSectionFixedSHeight
-            }
-            .onChange(of: inputFieldIsFocused) { _, focused in
-                withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 0.8)) {
-                    if focused {
-                        // When keyboard appears, set dragOffset to "collapsed" state to hide calendar.
-                        // The actual visual positioning is handled by calculateOffset's keyboard logic.
-                        self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                    .frame(height: topSectionFixedSHeight)
+                    .background(Color.clear)
+
+                    // --- Scrollable Bottom Section (Calendar) ---
+                    if shouldShowCalendarContent {
+                        ScrollView(showsIndicators: false) {
+                            CalendarTodosView(todos: $todos)
+                                .padding(.top, 35)
+                        }
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                     } else {
-                        // When keyboard dismisses, if card wasn't manually pulled up for calendar,
-                        // ensure it returns to the "top section visible" state.
-                        // If dragOffset is 0 (calendar was fully shown), leave it there.
-                        // This logic remains, as shouldShowCalendarContent will become true if dragOffset is 0
-                        if self.dragOffset != 0 { // If not fully expanded to show calendar
-                           self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                        Spacer()
+                    }
+                }
+                .frame(width: geometry.size.width)
+                .frame(maxHeight: .infinity)
+                .background(
+                    ZStack {
+                        Color("DraggableCard")
+                        .background(.ultraThinMaterial)
+                    }
+                )
+                .cornerRadius(cardCornerRadius, corners: [.topLeft, .topRight])
+                .clipped()
+                .offset(y: {
+                    _ = keyboardResponder.currentHeight // ensure dependency tracking
+                    return calculateOffset(geometry: geometry, keyboardHeight: keyboardResponder.currentHeight)
+                }() + (isDragging ? gestureOffset : 0))
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if inputFieldIsFocused {
+                                inputFieldIsFocused = false // Dismiss keyboard immediately on drag
+                            }
+                            isDragging = true
+                            gestureOffset = value.translation.height
+                        }
+                        .onEnded { value in
+                            isDragging = false
+                            gestureOffset = 0
+
+                            if inputFieldIsFocused {
+                                withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 0.8)) {
+                                    self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                                }
+                                inputFieldIsFocused = false
+                                return
+                            }
+
+                            let predictedEndOffset = value.predictedEndTranslation.height + dragOffset
+                            if predictedEndOffset < (geometry.size.height - topSectionFixedSHeight) * 0.6 {
+                                self.dragOffset = 0 // Snap Up
+                            } else {
+                                self.dragOffset = geometry.size.height - topSectionFixedSHeight // Snap Down
+                                inputFieldIsFocused = false
+                            }
+                        }
+                )
+                .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.75, blendDuration: 0.2), value: dragOffset)
+                .ignoresSafeArea(edges: .bottom)
+                .onAppear {
+                    self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                }
+                .onChange(of: inputFieldIsFocused) { _, focused in
+                    withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 0.8)) {
+                        if focused {
+                            // When keyboard appears, set dragOffset to "collapsed" state to hide calendar.
+                            // The actual visual positioning is handled by calculateOffset's keyboard logic.
+                            self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                        } else {
+                            // When keyboard dismisses, if card wasn't manually pulled up for calendar,
+                            // ensure it returns to the "top section visible" state.
+                            // If dragOffset is 0 (calendar was fully shown), leave it there.
+                            // This logic remains, as shouldShowCalendarContent will become true if dragOffset is 0
+                            if self.dragOffset != 0 { // If not fully expanded to show calendar
+                               self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                            }
                         }
                     }
                 }
-            }
-            .onChange(of: keyboardResponder.currentHeight) { _, newKeyboardHeight in
-                 // This onChange is primarily to trigger a re-calculation of offset via calculateOffset
-                 // if the keyboard height changes *while* the input field is already focused.
-                 // The dragOffset itself, if input is focused, should remain to keep calendar hidden.
-                if inputFieldIsFocused {
-                    withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 0.8)) {
-                        // Ensure dragOffset reflects "collapsed" state for calendar visibility
-                        self.dragOffset = geometry.size.height - topSectionFixedSHeight
-                        // The view will re-render and calculateOffset will use the newKeyboardHeight
+                .onChange(of: keyboardResponder.currentHeight) { _, newKeyboardHeight in
+                     // This onChange is primarily to trigger a re-calculation of offset via calculateOffset
+                     // if the keyboard height changes *while* the input field is already focused.
+                     // The dragOffset itself, if input is focused, should remain to keep calendar hidden.
+                    print("🔹 KeyboardResponder height changed: \(newKeyboardHeight)")
+                    if inputFieldIsFocused {
+                        withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 0.8)) {
+                            // Ensure dragOffset reflects "collapsed" state for calendar visibility
+                            self.dragOffset = geometry.size.height - topSectionFixedSHeight
+                            // The view will re-render and calculateOffset will use the newKeyboardHeight
+                        }
                     }
                 }
             }
@@ -155,7 +163,7 @@ struct DraggableInputCardView: View {
         let minCardTopYWhenExpanded_Offset = screenHeight - expandedHeight
         let maxCardTopYWhenCollapsed_Offset = screenHeight - topSectionFixedSHeight
 
-        if inputFieldIsFocused && keyboardHeight > 0 {
+        if keyboardHeight > 0 {
             // Calculate the desired top Y coordinate of the card in global space
             let desiredGlobalCardTopY = UIScreen.main.bounds.height - keyboardHeight - topSectionFixedSHeight - 20
             
@@ -165,6 +173,16 @@ struct DraggableInputCardView: View {
             
             // Ensure the card doesn't go higher than its fully expanded state
             keyboardAdjustedOffset = max(minCardTopYWhenExpanded_Offset, keyboardAdjustedOffset)
+            
+            print("""
+            📏 Offset calc:
+              screenHeight: \(screenHeight)
+              keyboardHeight: \(keyboardHeight)
+              geometryGlobalMinY: \(geometryGlobalMinY)
+              desiredGlobalTopY: \(desiredGlobalCardTopY)
+              final offset: \(keyboardAdjustedOffset)
+            """)
+            
             return keyboardAdjustedOffset
         } else {
             // Original logic for when keyboard is not active or not visible

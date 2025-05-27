@@ -12,19 +12,9 @@ struct TodoInputBarView: View {
             RoundedRectangle(cornerRadius: 30)
                 .stroke(Color("InputBarLine"), lineWidth: 2)
             HStack {
-                TextField("", text: $newTodoText)
-                    .disableAutocorrection(false)
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(Color("TextColor"))
-                    .accentColor(.accentGray)
+                CustomTextField(text: $newTodoText, isFirstResponder: isInputActive, onSubmit: onSubmit)
                     .padding(.leading, 16)
-                    .submitLabel(.done)
-                    .onSubmit {
-                        DispatchQueue.main.async {
-                            onSubmit()
-                        }
-                    }
-                    .focused($isInputActive)
+                    .frame(height: 40)
                     .overlay(
                         newTodoText.isEmpty
                             ? VStack(alignment: .leading) {
@@ -44,7 +34,12 @@ struct TodoInputBarView: View {
                 
                 Button(action: {
                     DispatchQueue.main.async {
-                        onSubmit()
+                        if newTodoText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            isInputActive = false
+                        } else {
+                            onSubmit()
+                            isInputActive = true
+                        }
                     }
                 }) {
                     ZStack {

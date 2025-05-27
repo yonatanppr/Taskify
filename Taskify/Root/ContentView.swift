@@ -9,17 +9,25 @@ struct ContentView: View {
             Group {
                 if viewModel.isReady {
                     ZStack {
-                        KeyboardPreloadView()
-                        ActiveTodosView(
-                            todos: $viewModel.todos,
-                            newTodoText: $viewModel.newTodoText,
-                            reminderManager: ReminderService(),
-                            showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
-                            reminderDate: $viewModel.reminderDate,
-                        )
-                        .zIndex(0)
-
-                        if let index = viewModel.showingDatePickerForIndex {
+                        Color.clear
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.newTodoText = ""
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            }
+                        ZStack {
+                            KeyboardPreloadView()
+                            ActiveTodosView(
+                                todos: $viewModel.todos,
+                                newTodoText: $viewModel.newTodoText,
+                                reminderManager: ReminderService(),
+                                showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
+                                reminderDate: $viewModel.reminderDate
+                            )
+                            .zIndex(0)
+                            if let index = viewModel.showingDatePickerForIndex {
+                                // your existing date picker logic
+                            }
                         }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)
