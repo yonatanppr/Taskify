@@ -89,6 +89,7 @@ struct ActiveTodoListSection: View {
             },
             reminderManager: reminderManager
         )
+        .contentShape(Rectangle()) // Ensures taps are restricted
         .listRowInsets(EdgeInsets())
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)

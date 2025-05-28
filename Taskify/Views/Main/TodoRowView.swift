@@ -17,91 +17,115 @@ struct TodoRowView: View {
     // Removed cardWidth, no longer needed
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Main row
-            HStack(spacing: 0) {
-                // --- Toggle Button ---
-                Button(action: {
-                    if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.prepare()
-                        generator.impactOccurred()
+        ZStack {
+            VStack(alignment: .leading, spacing: 0) {
+                // Main row
+                HStack(spacing: 0) {
+                    // --- Toggle Button ---
+                    Button(action: {
+                        if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.prepare()
+                            generator.impactOccurred()
+                        }
+                        onToggle()
+                    }) {
+                        Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(todo.isDone ? .positiveGreen : Color("TodoText"))
+                            .frame(width: 36, height: 36, alignment: .center)
                     }
-                    onToggle()
-                }) {
-                    Image(systemName: todo.isDone ? "checkmark.circle.fill" : "circle")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(todo.isDone ? .positiveGreen : Color("TodoText"))
-                        .frame(width: 36, height: 36, alignment: .center)
+                    .buttonStyle(PlainButtonStyle())
+                    .contentShape(Rectangle())
+                    .disabled(isExpanded)
+
+                    Text(todo.title)
+                        .font(.system(size: 17, weight: .regular, design: .rounded))
+                        .foregroundColor(todo.isDone ? .secondaryText : Color("TodoText"))
+                        .strikethrough(todo.isDone, color: .secondaryText)
+                        .padding(.leading, 12)
+                        .padding(.vertical, 8)
+                        .allowsHitTesting(!isExpanded)
+
+                    Button(action: {
+                        onQuickTicToggle()
+                    }) {
+                        Image(systemName: "bolt.fill")
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .foregroundColor(todo.isQuickTic ? Color("SelectedTodoAttribute") : Color("UnselectedTodoAttribute"))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .cornerRadius(10)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .contentShape(Rectangle())
+                    .padding(.leading, 6)
+                    .disabled(isExpanded)
+
+                    Spacer(minLength: 8)
+                        .allowsHitTesting(false)
+
+                    // --- Bell Button ---
+                    Button(action: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                            isExpanded.toggle()
+                        }
+                        onBellTap()
+                    }) {
+                        Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor({
+                                if let date = todo.reminderDate {
+                                    return date < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute")
+                                } else {
+                                    return Color("UnselectedTodoAttribute")
+                                }
+                            }())
+                            .frame(width: 36, height: 36, alignment: .center)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .contentShape(Rectangle())
+                    .disabled(isExpanded)
                 }
-                .buttonStyle(PlainButtonStyle())
-                .contentShape(Rectangle())
+                .allowsHitTesting(true)
 
-                Text(todo.title)
-                    .font(.system(size: 17, weight: .regular, design: .rounded))
-                    .foregroundColor(todo.isDone ? .secondaryText : Color("TodoText"))
-                    .strikethrough(todo.isDone, color: .secondaryText)
-                    .padding(.leading, 12)
-                    .padding(.vertical, 8)
-                    .allowsHitTesting(false)
-
-                Button(action: {
-                    onQuickTicToggle()
-                }) {
-                    Image(systemName: "bolt.fill")
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        .foregroundColor(todo.isQuickTic ? Color("SelectedTodoAttribute") : Color("UnselectedTodoAttribute"))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .cornerRadius(10)
+                // Reminder text row
+                if let reminder = todo.reminderDate {
+                    HStack {
+                        Spacer()
+                        Text(formattedReminder(reminder))
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundColor(reminder < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute"))
+                            .allowsHitTesting(!isExpanded)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 8)
                 }
-                .buttonStyle(PlainButtonStyle())
-                .padding(.leading, 6)
-
-                Spacer(minLength: 8)
-                    .allowsHitTesting(false)
-
-                // --- Bell Button ---
-                Button(action: {
-                    isExpanded.toggle()
-                    onBellTap()
-                }) {
-                    Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundColor({
-                            if let date = todo.reminderDate {
-                                return date < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute")
-                            } else {
-                                return Color("UnselectedTodoAttribute")
-                            }
-                        }())
-                        .frame(width: 36, height: 36, alignment: .center)
-                }
-                .buttonStyle(PlainButtonStyle())
-                .contentShape(Rectangle())
             }
-            .padding(.vertical, 8)
+            .background(
+                Group {
+                    Color("TodoCard")
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                }
+            )
             .padding(.horizontal, 12)
-
-            // Reminder text row
-            if let reminder = todo.reminderDate {
-                HStack {
-                    Spacer()
-                    Text(formattedReminder(reminder))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundColor(reminder < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute"))
-                }
-                .padding(.horizontal, 12)
-                .padding(.bottom, 8)
-            }
-
-            // Expanded picker section
+            .padding(.vertical, 4)
+            .simultaneousGesture(TapGesture().onEnded { })
+            
             if isExpanded {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation {
+                            isExpanded = false
+                        }
+                    }
                 VStack(spacing: 12) {
                     DatePicker("", selection: $reminderDate, displayedComponents: [.date, .hourAndMinute])
                         .datePickerStyle(.wheel)
                         .labelsHidden()
-                        .frame(height: 150)
+                        .frame(width: 100, height: 150)
+                        .padding(20)
 
                     HStack(spacing: 20) {
                         if todo.reminderDate != nil {
@@ -111,14 +135,22 @@ struct TodoRowView: View {
                                 updated.reminderDate = nil
                                 updated.reminderID = nil
                                 onRemoveReminder(updated)
-                                isExpanded = false
+                                withAnimation {
+                                    isExpanded = false
+                                }
                             }
                             .foregroundColor(.red)
+                            .contentShape(Rectangle())
+                            .buttonStyle(PlainButtonStyle())
                         } else {
                             Button("Cancel") {
-                                isExpanded = false
+                                withAnimation {
+                                    isExpanded = false
+                                }
                             }
                             .foregroundColor(.gray)
+                            .contentShape(Rectangle())
+                            .buttonStyle(PlainButtonStyle())
                         }
 
                         Spacer()
@@ -136,20 +168,24 @@ struct TodoRowView: View {
                             }
                         }
                         .foregroundColor(.blue)
+                        .contentShape(Rectangle())
+                        .buttonStyle(PlainButtonStyle())
                     }
                     .padding(.horizontal, 12)
                 }
+                .contentShape(Rectangle())
+                .allowsHitTesting(true)
                 .padding(.bottom, 8)
+                .background(
+                    Color("TodoCard")
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                )
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
+                .transition(.scale(scale: 0.95, anchor: .top))
+                .animation(.spring(response: 0.4, dampingFraction: 0.85), value: isExpanded)
             }
         }
-        .frame(maxWidth: .infinity)
-        .background(
-            Color("TodoCard")
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        )
-        .padding(.horizontal, 12)
-        .padding(.vertical, 4)
-        .animation(.easeInOut(duration: 0.25), value: isExpanded)
     }
 
     private func formattedReminder(_ date: Date) -> String {
