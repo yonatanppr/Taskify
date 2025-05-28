@@ -3,17 +3,23 @@ import CoreHaptics
 
 struct TodoRowView: View {
     var todo: TodoItem
-    // `reminderDate` is bound from parent but not directly used in this View's logic to display
-    // It's used by ActiveTodoListSection for the DatePicker logic.
     @Binding var reminderDate: Date
     var onToggle: () -> Void
     var onBellTap: () -> Void
     var onQuickTicToggle: () -> Void
 
+    var onUpdate: (TodoItem) -> Void
+    var onRemoveReminder: (TodoItem) -> Void
+    let reminderManager: ReminderManaging
+
+    @State private var isExpanded: Bool = false
+    @State private var didCancel: Bool = false
+    // Removed cardWidth, no longer needed
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Main row: toggle, title, quick tic, bell
-            HStack(alignment: .center, spacing: 0) {
+            // Main row
+            HStack(spacing: 0) {
                 // --- Toggle Button ---
                 Button(action: {
                     if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
@@ -57,6 +63,7 @@ struct TodoRowView: View {
 
                 // --- Bell Button ---
                 Button(action: {
+                    isExpanded.toggle()
                     onBellTap()
                 }) {
                     Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
@@ -73,27 +80,78 @@ struct TodoRowView: View {
                 .buttonStyle(PlainButtonStyle())
                 .contentShape(Rectangle())
             }
-            // Second row: right-aligned reminder date (if any)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+
+            // Reminder text row
             if let reminder = todo.reminderDate {
                 HStack {
                     Spacer()
                     Text(formattedReminder(reminder))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundColor(reminder < Date() ? Color("OverdueBell") : Color("SelectedTodoAttribute"))
-                        .padding(.trailing, 12)
-                        .allowsHitTesting(false)
                 }
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
+            }
+
+            // Expanded picker section
+            if isExpanded {
+                VStack(spacing: 12) {
+                    DatePicker("", selection: $reminderDate, displayedComponents: [.date, .hourAndMinute])
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .frame(height: 150)
+
+                    HStack(spacing: 20) {
+                        if todo.reminderDate != nil {
+                            Button("Remove") {
+                                reminderManager.remove(for: todo)
+                                var updated = todo
+                                updated.reminderDate = nil
+                                updated.reminderID = nil
+                                onRemoveReminder(updated)
+                                isExpanded = false
+                            }
+                            .foregroundColor(.red)
+                        } else {
+                            Button("Cancel") {
+                                isExpanded = false
+                            }
+                            .foregroundColor(.gray)
+                        }
+
+                        Spacer()
+
+                        Button("Set") {
+                            if todo.reminderDate != reminderDate {
+                                var updated = todo
+                                updated.reminderDate = reminderDate
+                                reminderManager.schedule(for: updated, at: reminderDate) { newTodo in
+                                    onUpdate(newTodo)
+                                    isExpanded = false
+                                }
+                            } else {
+                                isExpanded = false
+                            }
+                        }
+                        .foregroundColor(.blue)
+                    }
+                    .padding(.horizontal, 12)
+                }
+                .padding(.bottom, 8)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 2)
+        .frame(maxWidth: .infinity)
         .background(
-            Color("TodoCard"), in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+            Color("TodoCard")
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         )
-        .padding(.horizontal, 8)
-        .id(todo.id)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 4)
+        .animation(.easeInOut(duration: 0.25), value: isExpanded)
     }
-    
+
     private func formattedReminder(_ date: Date) -> String {
         let timeString = date.formatted(date: .omitted, time: .shortened)
         if Calendar.current.isDateInToday(date) {

@@ -9,7 +9,6 @@ struct ActiveTodoListSection: View {
     let reminderManager: ReminderManaging
 
     @State private var todoToDelete: TodoItem?
-    @State private var selectedTodoForReminder: TodoItem?
 
     private var filteredTodos: [Binding<TodoItem>] {
         switch taskFilter {
@@ -53,8 +52,10 @@ struct ActiveTodoListSection: View {
                         print(" Removing reminder for '\(todoForReminderRemoval.title)' (item had no reminderID when toggled to done)")
                     }
                     reminderManager.remove(for: todoForReminderRemoval)
-                    todoBinding.reminderDate.wrappedValue = nil
-                    todoBinding.reminderID.wrappedValue = nil
+                    if let index = todos.firstIndex(where: { $0.id == todoForReminderRemoval.id }) {
+                        todos[index].reminderDate = nil
+                        todos[index].reminderID = nil
+                    }
                 }
             }
         }
@@ -64,7 +65,6 @@ struct ActiveTodoListSection: View {
             reminderDate: $reminderDate,
             onToggle: onToggle,
             onBellTap: {
-                selectedTodoForReminder = todoBinding.wrappedValue
                 if let date = todoBinding.reminderDate.wrappedValue {
                     reminderDate = date
                 } else {
@@ -75,7 +75,19 @@ struct ActiveTodoListSection: View {
                 if let index = todos.firstIndex(where: { $0.id == todoBinding.id }) {
                     todos[index].isQuickTic.toggle()
                 }
-            }
+            },
+            onUpdate: { updatedTodo in
+                if let index = todos.firstIndex(where: { $0.id == updatedTodo.id }) {
+                    todos[index] = updatedTodo
+                }
+            },
+            onRemoveReminder: { todoToRemove in
+                if let index = todos.firstIndex(where: { $0.id == todoToRemove.id }) {
+                    todos[index].reminderDate = nil
+                    todos[index].reminderID = nil
+                }
+            },
+            reminderManager: reminderManager
         )
         .listRowInsets(EdgeInsets())
         .listRowSeparator(.hidden)
@@ -115,15 +127,6 @@ struct ActiveTodoListSection: View {
                     }
                 },
                 secondaryButton: .cancel()
-            )
-        }
-        .sheet(item: $selectedTodoForReminder) { todo in
-            ReminderSheetView(
-                reminderDate: $reminderDate,
-                isPresented: Binding(get: { selectedTodoForReminder != nil }, set: { if !$0 { selectedTodoForReminder = nil } }),
-                todos: $todos,
-                todo: todo,
-                reminderManager: reminderManager
             )
         }
     }

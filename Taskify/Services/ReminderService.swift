@@ -16,7 +16,9 @@ struct ReminderService {
                         print("🗑️ Removed old reminder with ID \(oldID) for \(todo.title)")
                     }
                     scheduleNotification(for: todo, at: date) { updatedTodo in
-                        completion(updatedTodo)
+                        Task { @MainActor in
+                            completion(updatedTodo)
+                        }
                     }
                 }
             } else {
@@ -45,7 +47,9 @@ struct ReminderService {
                 print("❌ Failed to schedule reminder: \(error)")
             } else {
                 print("✅ Reminder scheduled for \(todo.title) at \(date)")
-                completion(updatedTodo)
+                Task { @MainActor in
+                    completion(updatedTodo)
+                }
             }
         }
     }

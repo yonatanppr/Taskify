@@ -2,6 +2,7 @@ import SwiftUI
 import CoreHaptics
 
 struct TodoGenerationHandler {
+    @MainActor
     static func handleNewTodoSubmission(
         text: String,
         todos: Binding<[TodoItem]>,
@@ -16,30 +17,28 @@ struct TodoGenerationHandler {
 
         // Use on-device parser instead of LLMService
         let parsed = NaturalLanguageParser.shared.parse(text)
-        await MainActor.run {
-            if parsed.title.isEmpty {
-                errorMessage.wrappedValue = "Failed to parse todo. Please try again."
-            } else {
-                let newTodo = TodoItem(
-                    id: UUID().uuidString,
-                    title: parsed.title.trimmingCharacters(in: .whitespacesAndNewlines),
-                    reminderDate: parsed.reminderDate
-                )
-                if let reminder = parsed.reminderDate {
-                    reminderManager.schedule(for: newTodo, at: reminder) { updatedTodo in
-                        todos.wrappedValue.append(updatedTodo)
-                    }
-                } else {
-                    todos.wrappedValue.append(newTodo)
+        if parsed.title.isEmpty {
+            errorMessage.wrappedValue = "Failed to parse todo. Please try again."
+        } else {
+            let newTodo = TodoItem(
+                id: UUID().uuidString,
+                title: parsed.title.trimmingCharacters(in: .whitespacesAndNewlines),
+                reminderDate: parsed.reminderDate
+            )
+            if let reminder = parsed.reminderDate {
+                reminderManager.schedule(for: newTodo, at: reminder) { updatedTodo in
+                    todos.wrappedValue.append(updatedTodo)
                 }
+            } else {
+                todos.wrappedValue.append(newTodo)
             }
-            isLoading.wrappedValue = false
-            onComplete()
-            if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
-                let generator = UIImpactFeedbackGenerator(style: .light)
-                generator.prepare()
-                generator.impactOccurred()
-            }
+        }
+        isLoading.wrappedValue = false
+        onComplete()
+        if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
         }
     }
 }

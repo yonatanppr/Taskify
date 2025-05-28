@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 
+@MainActor
 class ContentViewModel: ObservableObject {
     @Published var todos: [TodoItem] = []
     @Published var newTodoText: String = ""

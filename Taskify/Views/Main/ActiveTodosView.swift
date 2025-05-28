@@ -6,7 +6,6 @@ struct ActiveTodosView: View {
     @Binding var todos: [TodoItem]
     @Binding var newTodoText: String
     let reminderManager: ReminderManaging
-    @Binding var showingDatePickerForIndex: Int?
     @Binding var reminderDate: Date
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
@@ -60,7 +59,7 @@ struct ActiveTodosView: View {
                         )
                         .zIndex(1)
                     }
-                    .animation(nil, value: showingDatePickerForIndex)
+                    
                 }
                 .animation(.spring(response: 0.35, dampingFraction: 0.85, blendDuration: 0), value: keyboardResponder.currentHeight)
             }
@@ -111,14 +110,18 @@ struct ActiveTodosView: View {
     }
     
     private func handleNewTodoSubmission() async {
-        await TodoGenerationHandler.handleNewTodoSubmission(
-            text: newTodoText,
-            todos: $todos,
-            isLoading: $isLoading,
-            errorMessage: $errorMessage,
-            reminderManager: reminderManager
-        ) {
-            newTodoText = ""
+        await MainActor.run {
+            Task {
+                await TodoGenerationHandler.handleNewTodoSubmission(
+                    text: newTodoText,
+                    todos: $todos,
+                    isLoading: $isLoading,
+                    errorMessage: $errorMessage,
+                    reminderManager: reminderManager
+                ) {
+                    newTodoText = ""
+                }
+            }
         }
     }
     // MARK: - Extracted Subviews
