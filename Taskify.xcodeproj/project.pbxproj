@@ -66,6 +66,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2D7A83132DEC7CB0004319F8 /* Exceptions for "Taskify" folder in "TaskifyWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = 2DB438C82DE107CB003AE675 /* TaskifyWidgetExtension */;
+		};
 		2DB438E02DE107CC003AE675 /* Exceptions for "TaskifyWidget" folder in "TaskifyWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -78,6 +85,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2D7BB7662DC2BAF000840843 /* Taskify */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2D7A83132DEC7CB0004319F8 /* Exceptions for "Taskify" folder in "TaskifyWidgetExtension" target */,
+			);
 			path = Taskify;
 			sourceTree = "<group>";
 		};

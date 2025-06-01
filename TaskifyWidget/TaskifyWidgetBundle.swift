@@ -8,7 +8,7 @@ struct TaskifyWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             WidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(Color("AppBackground"), for: .widget)
         }
         .configurationDisplayName("Taskify")
         .description("Displays your tasks due today.")
