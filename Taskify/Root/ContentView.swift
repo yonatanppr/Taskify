@@ -15,8 +15,6 @@ struct ContentView: View {
                                 todos: $viewModel.todos,
                                 newTodoText: $viewModel.newTodoText,
                                 reminderManager: ReminderService(),
-                                showingDatePickerForIndex: $viewModel.showingDatePickerForIndex,
-                                reminderDate: $viewModel.reminderDate
                             )
                             .zIndex(0)
                         }
