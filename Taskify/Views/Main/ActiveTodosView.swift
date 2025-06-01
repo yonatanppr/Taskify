@@ -66,10 +66,10 @@ struct ActiveTodosView: View {
         }) {
             SettingsView()
         }
-        .onChange(of: selectedFiltersRaw) { newValue in
+        .onChange(of: selectedFiltersRaw) { _, _ in
             updateTaskFilterIfNeeded()
         }
-        .onChange(of: selectedFilters) { newFilters in
+        .onChange(of: selectedFilters) { _, _ in
             updateTaskFilterIfNeeded()
         }
         .onAppear {

@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 
+@MainActor
 class ContentViewModel: ObservableObject {
     @Published var todos: [TodoItem] = []
     @Published var newTodoText: String = ""
@@ -10,8 +11,6 @@ class ContentViewModel: ObservableObject {
     @Published var isShowingCalendarView: Bool = false
     @Published var showViewSelectionDialog: Bool = false
 
-    // ADD: @MainActor to ensure UI related initializations are on the main thread
-    @MainActor
     func preloadApp() async {
         todos = SharedStorage.loadTodos()
         let _ = UITextField()

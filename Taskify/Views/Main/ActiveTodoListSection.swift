@@ -66,8 +66,10 @@ struct ActiveTodoListSection: View {
                         todos[idx].reminderDate = newDate
                         // schedule the notification
                         reminderManager.schedule(for: todos[idx], at: newDate) { updatedTodo in
-                            if let i = todos.firstIndex(where: { $0.id == updatedTodo.id }) {
-                                todos[i] = updatedTodo
+                            DispatchQueue.main.async {
+                                if let i = todos.firstIndex(where: { $0.id == updatedTodo.id }) {
+                                    todos[i] = updatedTodo
+                                }
                             }
                         }
                     }
