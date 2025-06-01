@@ -6,8 +6,6 @@ struct ActiveTodosView: View {
     @Binding var todos: [TodoItem]
     @Binding var newTodoText: String
     let reminderManager: ReminderManaging
-    @Binding var showingDatePickerForIndex: Int?
-    @Binding var reminderDate: Date
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
     @State private var showingSettings = false
@@ -33,7 +31,6 @@ struct ActiveTodosView: View {
             return [.all, .upcoming, .quickTics]
         }
         let filters = decoded.compactMap { TaskFilter(rawValue: $0) }
-        let widgetTodoCount = UserDefaults.standard.integer(forKey: "widget_todo_count_debug")
         return Array(filters.prefix(3))
     }
     
@@ -46,21 +43,18 @@ struct ActiveTodosView: View {
     var body: some View {
         ZStack {
             GeometryReader { geometryOfActiveTodosView in
-                Group {
-                    ZStack(alignment: .bottom) {
-                        mainContent
-                        
-                        DraggableInputCardView(
-                            newTodoText: $newTodoText,
-                            onSubmit: {
-                                Task { await handleNewTodoSubmission() }
-                            },
-                            errorMessage: $errorMessage,
-                            todos: $todos
-                        )
-                        .zIndex(1)
-                    }
-                    .animation(nil, value: showingDatePickerForIndex)
+                ZStack(alignment: .bottom) {
+                    mainContent
+                    
+                    DraggableInputCardView(
+                        newTodoText: $newTodoText,
+                        onSubmit: {
+                            Task { await handleNewTodoSubmission() }
+                        },
+                        errorMessage: $errorMessage,
+                        todos: $todos
+                    )
+                    .zIndex(1)
                 }
                 .animation(.spring(response: 0.35, dampingFraction: 0.85, blendDuration: 0), value: keyboardResponder.currentHeight)
             }
@@ -127,7 +121,6 @@ struct ActiveTodosView: View {
         ActiveTodoListSection(
             todos: $todos,
             taskFilter: taskFilter,
-            reminderDate: $reminderDate,
             reminderManager: reminderManager
         )
         .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),

@@ -7,8 +7,10 @@ struct TodoRowView: View {
     // It's used by ActiveTodoListSection for the DatePicker logic.
     @Binding var reminderDate: Date
     var onToggle: () -> Void
-    var onBellTap: () -> Void
     var onQuickTicToggle: () -> Void
+    var onRemoveReminder: () -> Void
+
+    @State private var isExpanded: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -57,7 +59,7 @@ struct TodoRowView: View {
 
                 // --- Bell Button ---
                 Button(action: {
-                    onBellTap()
+                    isExpanded.toggle()
                 }) {
                     Image(systemName: todo.reminderDate != nil ? "bell.fill" : "bell")
                         .font(.system(size: 15, weight: .medium))
@@ -84,7 +86,35 @@ struct TodoRowView: View {
                         .allowsHitTesting(false)
                 }
             }
+            if isExpanded {
+                VStack(alignment: .center, spacing: 8) {
+                    DatePicker("", selection: $reminderDate)
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .frame(width: 100)
+                        .frame(maxWidth: .infinity)
+
+                    HStack {
+                        Spacer()
+                        if todo.reminderDate != nil {
+                            Button("Remove Reminder") {
+                                withAnimation {
+                                    onRemoveReminder()
+                                    isExpanded = false
+                                }
+                            }
+                            .foregroundStyle(Color.red)
+                        }
+                        Spacer()
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
+                .transition(.move(edge: .bottom))
+                .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isExpanded)
+            }
         }
+        .animation(nil, value: isExpanded)
         .padding(.horizontal, 12)
         .padding(.vertical, 2)
         .background(
@@ -92,6 +122,7 @@ struct TodoRowView: View {
         )
         .padding(.horizontal, 8)
         .id(todo.id)
+        .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isExpanded)
     }
     
     private func formattedReminder(_ date: Date) -> String {
